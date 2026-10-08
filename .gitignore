@@ -1,0 +1,4 @@
+tmp/
+.codex-finalizer/
+__pycache__/
+*.pyc
