@@ -4,7 +4,7 @@
 
 ## Текущий комплект
 
-- `output/Fit Nutrition Supply.pptx` — исходная презентация одногруппника, без изменений.
+- `output/Fit_Nutrition_Supply_updated.pptx` — презентация с точечными уточнениями после работы с ИИ. Исходная версия сохранена в `sources/Fit Nutrition Supply original.pptx`.
 - `output/Fit_Nutrition_Supply_AI_Report.pdf` — отдельный отчёт об использовании ИИ.
 - `docs/ai_usage_report.md` — редактируемый исходник отчёта об ИИ.
 
