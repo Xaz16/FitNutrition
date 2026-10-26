@@ -1,0 +1,202 @@
+{
+  "directed": true,
+  "graphAttributes": {
+    "rankdir": "TB",
+    "bgcolor": "white",
+    "pad": 0.2,
+    "nodesep": 0.35,
+    "ranksep": 0.45,
+    "splines": "polyline"
+  },
+  "nodeAttributes": {
+    "fontname": "Times New Roman",
+    "fontsize": 13,
+    "margin": "0.15,0.12",
+    "style": "solid",
+    "color": "black"
+  },
+  "edgeAttributes": {
+    "fontname": "Times New Roman",
+    "fontsize": 11,
+    "arrowsize": 0.65
+  },
+  "nodes": [
+    {
+      "name": "start",
+      "attributes": {
+        "label": "",
+        "shape": "point"
+      }
+    },
+    {
+      "name": "settings",
+      "attributes": {
+        "label": "Ввести параметры, период,\nбюджет и исключения",
+        "shape": "box"
+      }
+    },
+    {
+      "name": "validate",
+      "attributes": {
+        "label": "Ввод корректен?",
+        "shape": "diamond"
+      }
+    },
+    {
+      "name": "error",
+      "attributes": {
+        "label": "Показать ошибки полей",
+        "shape": "box"
+      }
+    },
+    {
+      "name": "build",
+      "attributes": {
+        "label": "Подобрать блюда\nс учётом ограничений",
+        "shape": "box"
+      }
+    },
+    {
+      "name": "ready",
+      "attributes": {
+        "label": "Меню полное?",
+        "shape": "diamond"
+      }
+    },
+    {
+      "name": "missing",
+      "attributes": {
+        "label": "Показать нехватку блюд\nПрежний план сохранить",
+        "shape": "box"
+      }
+    },
+    {
+      "name": "save",
+      "attributes": {
+        "label": "Сохранить план одной транзакцией",
+        "shape": "box"
+      }
+    },
+    {
+      "name": "list",
+      "attributes": {
+        "label": "Суммировать продукты\nи вычесть домашние запасы",
+        "shape": "box"
+      }
+    },
+    {
+      "name": "compare",
+      "attributes": {
+        "label": "Рассчитать упаковки\nи сравнить полные корзины",
+        "shape": "box"
+      }
+    },
+    {
+      "name": "show",
+      "attributes": {
+        "label": "Показать магазин, сумму,\nдату цен и бюджет",
+        "shape": "box"
+      }
+    },
+    {
+      "name": "end",
+      "attributes": {
+        "label": "",
+        "shape": "doublecircle"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "tail": "start",
+      "head": "settings",
+      "attributes": {
+        "label": ""
+      }
+    },
+    {
+      "tail": "settings",
+      "head": "validate",
+      "attributes": {
+        "label": ""
+      }
+    },
+    {
+      "tail": "validate",
+      "head": "error",
+      "attributes": {
+        "label": "[нет]"
+      }
+    },
+    {
+      "tail": "error",
+      "head": "settings",
+      "attributes": {
+        "label": ""
+      }
+    },
+    {
+      "tail": "validate",
+      "head": "build",
+      "attributes": {
+        "label": "[да]"
+      }
+    },
+    {
+      "tail": "build",
+      "head": "ready",
+      "attributes": {
+        "label": ""
+      }
+    },
+    {
+      "tail": "ready",
+      "head": "missing",
+      "attributes": {
+        "label": "[нет]"
+      }
+    },
+    {
+      "tail": "missing",
+      "head": "settings",
+      "attributes": {
+        "label": ""
+      }
+    },
+    {
+      "tail": "ready",
+      "head": "save",
+      "attributes": {
+        "label": "[да]"
+      }
+    },
+    {
+      "tail": "save",
+      "head": "list",
+      "attributes": {
+        "label": ""
+      }
+    },
+    {
+      "tail": "list",
+      "head": "compare",
+      "attributes": {
+        "label": ""
+      }
+    },
+    {
+      "tail": "compare",
+      "head": "show",
+      "attributes": {
+        "label": ""
+      }
+    },
+    {
+      "tail": "show",
+      "head": "end",
+      "attributes": {
+        "label": ""
+      }
+    }
+  ]
+}

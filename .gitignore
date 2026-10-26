@@ -2,3 +2,5 @@ tmp/
 .codex-finalizer/
 __pycache__/
 *.pyc
+prototype/.venv/
+prototype/data/

@@ -1,0 +1,188 @@
+{
+  "directed": true,
+  "graphAttributes": {
+    "rankdir": "TB",
+    "bgcolor": "white",
+    "pad": 0.2,
+    "nodesep": 0.35,
+    "ranksep": 0.45,
+    "splines": "polyline"
+  },
+  "nodeAttributes": {
+    "fontname": "Times New Roman",
+    "fontsize": 13,
+    "margin": "0.15,0.12",
+    "style": "solid",
+    "color": "black"
+  },
+  "edgeAttributes": {
+    "fontname": "Times New Roman",
+    "fontsize": 11,
+    "arrowsize": 0.65
+  },
+  "nodes": [
+    {
+      "name": "start",
+      "attributes": {
+        "label": "",
+        "shape": "point"
+      }
+    },
+    {
+      "name": "open",
+      "attributes": {
+        "label": "Открыть блюдо и запросить замены",
+        "shape": "box"
+      }
+    },
+    {
+      "name": "filter",
+      "attributes": {
+        "label": "Проверить состав, время,\nтип приёма и лимит повторов",
+        "shape": "box"
+      }
+    },
+    {
+      "name": "exists",
+      "attributes": {
+        "label": "Есть варианты?",
+        "shape": "diamond"
+      }
+    },
+    {
+      "name": "none",
+      "attributes": {
+        "label": "Сообщить об отсутствии вариантов\nБлюдо оставить",
+        "shape": "box"
+      }
+    },
+    {
+      "name": "choose",
+      "attributes": {
+        "label": "Выбрать альтернативу",
+        "shape": "box"
+      }
+    },
+    {
+      "name": "confirm",
+      "attributes": {
+        "label": "Замена подтверждена?",
+        "shape": "diamond"
+      }
+    },
+    {
+      "name": "cancel",
+      "attributes": {
+        "label": "Закрыть без изменения плана",
+        "shape": "box"
+      }
+    },
+    {
+      "name": "update",
+      "attributes": {
+        "label": "Проверить владельца и ограничения\nСохранить новую позицию",
+        "shape": "box"
+      }
+    },
+    {
+      "name": "recalc",
+      "attributes": {
+        "label": "Пересчитать день, список и корзины",
+        "shape": "box"
+      }
+    },
+    {
+      "name": "end",
+      "attributes": {
+        "label": "",
+        "shape": "doublecircle"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "tail": "start",
+      "head": "open",
+      "attributes": {
+        "label": ""
+      }
+    },
+    {
+      "tail": "open",
+      "head": "filter",
+      "attributes": {
+        "label": ""
+      }
+    },
+    {
+      "tail": "filter",
+      "head": "exists",
+      "attributes": {
+        "label": ""
+      }
+    },
+    {
+      "tail": "exists",
+      "head": "none",
+      "attributes": {
+        "label": "[нет]"
+      }
+    },
+    {
+      "tail": "none",
+      "head": "end",
+      "attributes": {
+        "label": ""
+      }
+    },
+    {
+      "tail": "exists",
+      "head": "choose",
+      "attributes": {
+        "label": "[да]"
+      }
+    },
+    {
+      "tail": "choose",
+      "head": "confirm",
+      "attributes": {
+        "label": ""
+      }
+    },
+    {
+      "tail": "confirm",
+      "head": "cancel",
+      "attributes": {
+        "label": "[нет]"
+      }
+    },
+    {
+      "tail": "cancel",
+      "head": "end",
+      "attributes": {
+        "label": ""
+      }
+    },
+    {
+      "tail": "confirm",
+      "head": "update",
+      "attributes": {
+        "label": "[да]"
+      }
+    },
+    {
+      "tail": "update",
+      "head": "recalc",
+      "attributes": {
+        "label": ""
+      }
+    },
+    {
+      "tail": "recalc",
+      "head": "end",
+      "attributes": {
+        "label": ""
+      }
+    }
+  ]
+}

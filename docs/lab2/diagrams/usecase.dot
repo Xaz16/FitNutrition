@@ -1,0 +1,63 @@
+digraph {
+	graph [bb="0 0 731 554",
+		bgcolor=white,
+		nodesep=0.35,
+		pad=0.2,
+		rankdir=LR,
+		ranksep=0.45,
+		splines=polyline
+	];
+	node [color=black,
+		fontname="Times New Roman",
+		fontsize=13,
+		label="\N",
+		margin="0.15,0.12",
+		style=solid
+	];
+	edge [arrowsize=0.65,
+		fontname="Times New Roman",
+		fontsize=11
+	];
+	subgraph cluster_system {
+		graph [fontname="Times New Roman",
+			fontsize=15,
+			label="Fit Nutrition Supply"
+		];
+		login	[label="Зарегистрироваться / войти",
+			shape=ellipse];
+		prefs	[label="Задать параметры,
+бюджет и исключения",
+			shape=ellipse];
+		plan	[label="Составить меню",
+			shape=ellipse];
+		list	[label="Получить список покупок",
+			shape=ellipse];
+		plan -> list	[label=«include»,
+			style=dashed];
+		replace	[label="Заменить блюдо",
+			shape=ellipse];
+		replace -> list	[label=«include»,
+			style=dashed];
+		recipe	[label="Просмотреть рецепт",
+			shape=ellipse];
+		stock	[label="Учесть домашние запасы",
+			shape=ellipse];
+		basket	[label="Сравнить полные корзины",
+			shape=ellipse];
+		packs	[label="Рассчитать целые упаковки",
+			shape=ellipse];
+		basket -> packs	[label=«include»,
+			style=dashed];
+	}
+	actor	[label="Пользователь
+(взрослый)",
+		shape=plaintext];
+	actor -> login	[arrowhead=none];
+	actor -> prefs	[arrowhead=none];
+	actor -> plan	[arrowhead=none];
+	actor -> replace	[arrowhead=none];
+	actor -> recipe	[arrowhead=none];
+	actor -> list	[arrowhead=none];
+	actor -> stock	[arrowhead=none];
+	actor -> basket	[arrowhead=none];
+}

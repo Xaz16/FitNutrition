@@ -1,0 +1,160 @@
+{
+  "directed": true,
+  "graphAttributes": {
+    "rankdir": "TB",
+    "bgcolor": "white",
+    "pad": 0.2,
+    "nodesep": 0.35,
+    "ranksep": 0.45,
+    "splines": "polyline"
+  },
+  "nodeAttributes": {
+    "fontname": "Times New Roman",
+    "fontsize": 13,
+    "margin": "0.15,0.12",
+    "style": "solid",
+    "color": "black"
+  },
+  "edgeAttributes": {
+    "fontname": "Times New Roman",
+    "fontsize": 11,
+    "arrowsize": 0.65
+  },
+  "nodes": [
+    {
+      "name": "start",
+      "attributes": {
+        "label": "",
+        "shape": "point"
+      }
+    },
+    {
+      "name": "request",
+      "attributes": {
+        "label": "Запросить обновление цен",
+        "shape": "box"
+      }
+    },
+    {
+      "name": "provider",
+      "attributes": {
+        "label": "Обратиться к PriceProvider",
+        "shape": "box"
+      }
+    },
+    {
+      "name": "ok",
+      "attributes": {
+        "label": "Источник ответил?",
+        "shape": "diamond"
+      }
+    },
+    {
+      "name": "update",
+      "attributes": {
+        "label": "Атомарно сохранить цены\nи дату набора",
+        "shape": "box"
+      }
+    },
+    {
+      "name": "keep",
+      "attributes": {
+        "label": "Оставить предыдущие цены\nОтветить 503 с кодом ошибки",
+        "shape": "box"
+      }
+    },
+    {
+      "name": "show",
+      "attributes": {
+        "label": "Показать сообщение и дату\nНе подставлять нулевые цены",
+        "shape": "box"
+      }
+    },
+    {
+      "name": "retry",
+      "attributes": {
+        "label": "Повторить запрос?",
+        "shape": "diamond"
+      }
+    },
+    {
+      "name": "end",
+      "attributes": {
+        "label": "",
+        "shape": "doublecircle"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "tail": "start",
+      "head": "request",
+      "attributes": {
+        "label": ""
+      }
+    },
+    {
+      "tail": "request",
+      "head": "provider",
+      "attributes": {
+        "label": ""
+      }
+    },
+    {
+      "tail": "provider",
+      "head": "ok",
+      "attributes": {
+        "label": ""
+      }
+    },
+    {
+      "tail": "ok",
+      "head": "update",
+      "attributes": {
+        "label": "[да]"
+      }
+    },
+    {
+      "tail": "update",
+      "head": "end",
+      "attributes": {
+        "label": ""
+      }
+    },
+    {
+      "tail": "ok",
+      "head": "keep",
+      "attributes": {
+        "label": "[нет]"
+      }
+    },
+    {
+      "tail": "keep",
+      "head": "show",
+      "attributes": {
+        "label": ""
+      }
+    },
+    {
+      "tail": "show",
+      "head": "retry",
+      "attributes": {
+        "label": ""
+      }
+    },
+    {
+      "tail": "retry",
+      "head": "request",
+      "attributes": {
+        "label": "[да]"
+      }
+    },
+    {
+      "tail": "retry",
+      "head": "end",
+      "attributes": {
+        "label": "[нет]"
+      }
+    }
+  ]
+}

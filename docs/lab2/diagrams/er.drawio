@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?><mxfile host="app.diagrams.net"><diagram name="er"><mxGraphModel pageWidth="843" pageHeight="703"><root><mxCell id="0"/><mxCell id="1" parent="0"/><mxCell id="n0" value="USERS
+────────────
+id TEXT PK
+email TEXT UNIQUE
+password_hash TEXT
+created_at TEXT" style="rounded=0;whiteSpace=wrap;html=0;fontFamily=Times New Roman;fontSize=13;strokeColor=#000000;" vertex="1" parent="1"><mxGeometry x="29.666399999999996" y="152.80000000000004" width="130.9032" height="103.67999999999999" as="geometry"/></mxCell><mxCell id="n1" value="SESSIONS
+────────────
+token_hash TEXT PK
+user_id TEXT FK
+expires_at REAL" style="rounded=0;whiteSpace=wrap;html=0;fontFamily=Times New Roman;fontSize=13;strokeColor=#000000;" vertex="1" parent="1"><mxGeometry x="205.73000000000002" y="19.999999999999986" width="129.6" height="89.28" as="geometry"/></mxCell><mxCell id="n2" value="LOGIN_ATTEMPTS
+────────────
+email TEXT PK(1)
+attempted_at REAL PK(2)" style="rounded=0;whiteSpace=wrap;html=0;fontFamily=Times New Roman;fontSize=13;strokeColor=#000000;" vertex="1" parent="1"><mxGeometry x="20.0004" y="53.19999999999999" width="150.2352" height="74.88" as="geometry"/></mxCell><mxCell id="n3" value="PROFILES
+────────────
+user_id TEXT PK FK
+settings_json TEXT" style="rounded=0;whiteSpace=wrap;html=0;fontFamily=Times New Roman;fontSize=13;strokeColor=#000000;" vertex="1" parent="1"><mxGeometry x="205.73000000000002" y="134.20000000000005" width="129.6" height="74.88" as="geometry"/></mxCell><mxCell id="n4" value="PLANS
+────────────
+id TEXT PK
+user_id TEXT FK
+start_date TEXT
+days INTEGER
+settings_json TEXT
+created_at TEXT" style="rounded=0;whiteSpace=wrap;html=0;fontFamily=Times New Roman;fontSize=13;strokeColor=#000000;" vertex="1" parent="1"><mxGeometry x="205.73000000000002" y="234.40000000000003" width="129.6" height="132.48000000000002" as="geometry"/></mxCell><mxCell id="n5" value="PLAN_ITEMS
+────────────
+id TEXT PK
+plan_id TEXT FK
+day INTEGER
+slot INTEGER
+recipe_id TEXT FK
+scale REAL
+UNIQUE(plan_id, day, slot)" style="rounded=0;whiteSpace=wrap;html=0;fontFamily=Times New Roman;fontSize=13;strokeColor=#000000;" vertex="1" parent="1"><mxGeometry x="451.40919999999994" y="186.20000000000005" width="158.2416" height="146.88" as="geometry"/></mxCell><mxCell id="n6" value="RECIPES
+────────────
+id TEXT PK
+name TEXT
+meal TEXT
+minutes INTEGER
+ingredients_json TEXT
+steps_json TEXT" style="rounded=0;whiteSpace=wrap;html=0;fontFamily=Times New Roman;fontSize=13;strokeColor=#000000;" vertex="1" parent="1"><mxGeometry x="203.2388" y="455.4" width="134.5824" height="132.48000000000002" as="geometry"/></mxCell><mxCell id="n7" value="INGREDIENTS
+────────────
+id TEXT PK
+name TEXT
+category TEXT
+unit TEXT
+kcal REAL
+protein REAL
+fat REAL
+carbs REAL
+allergens_json TEXT" style="rounded=0;whiteSpace=wrap;html=0;fontFamily=Times New Roman;fontSize=13;strokeColor=#000000;" vertex="1" parent="1"><mxGeometry x="465.72999999999996" y="457.79999999999995" width="129.6" height="175.68" as="geometry"/></mxCell><mxCell id="n8" value="STORES
+────────────
+id TEXT PK
+name TEXT" style="rounded=0;whiteSpace=wrap;html=0;fontFamily=Times New Roman;fontSize=13;strokeColor=#000000;" vertex="1" parent="1"><mxGeometry x="465.72999999999996" y="358.20000000000005" width="129.6" height="74.88" as="geometry"/></mxCell><mxCell id="n9" value="OFFERS
+────────────
+id TEXT PK
+store_id TEXT FK
+ingredient_id TEXT FK
+pack_size REAL
+price_kopecks INTEGER
+available INTEGER
+updated_at TEXT
+source TEXT
+city TEXT" style="rounded=0;whiteSpace=wrap;html=0;fontFamily=Times New Roman;fontSize=13;strokeColor=#000000;" vertex="1" parent="1"><mxGeometry x="654.998" y="337.79999999999995" width="145.224" height="175.68" as="geometry"/></mxCell><mxCell id="n10" value="PANTRY
+────────────
+user_id TEXT PK(1) FK
+ingredient_id TEXT PK(2) FK
+amount REAL
+purchased INTEGER" style="rounded=0;whiteSpace=wrap;html=0;fontFamily=Times New Roman;fontSize=13;strokeColor=#000000;" vertex="1" parent="1"><mxGeometry x="642.6536" y="568.8" width="169.9128" height="103.67999999999999" as="geometry"/></mxCell><mxCell id="e0" value="1 : 0..*" source="n0" target="n1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;endArrow=none;dashed=0;fontFamily=Times New Roman;fontSize=11;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell><mxCell id="e1" value="1 : 0..*" source="n0" target="n4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;endArrow=none;dashed=0;fontFamily=Times New Roman;fontSize=11;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell><mxCell id="e2" value="1 : 0..*" source="n4" target="n5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;endArrow=none;dashed=0;fontFamily=Times New Roman;fontSize=11;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell><mxCell id="e3" value="1 : 0..*" source="n6" target="n5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;endArrow=none;dashed=0;fontFamily=Times New Roman;fontSize=11;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell><mxCell id="e4" value="1 : 0..*" source="n8" target="n9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;endArrow=none;dashed=0;fontFamily=Times New Roman;fontSize=11;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell><mxCell id="e5" value="1 : 0..*" source="n7" target="n9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;endArrow=none;dashed=0;fontFamily=Times New Roman;fontSize=11;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell><mxCell id="e6" value="1 : 0..*" source="n0" target="n10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;endArrow=none;dashed=0;fontFamily=Times New Roman;fontSize=11;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell><mxCell id="e7" value="1 : 0..*" source="n7" target="n10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;endArrow=none;dashed=0;fontFamily=Times New Roman;fontSize=11;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell><mxCell id="e8" value="1 : 0..1" source="n0" target="n3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;endArrow=none;dashed=0;fontFamily=Times New Roman;fontSize=11;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell><mxCell id="e9" value="ссылки id в JSON
+без SQL FK" source="n6" target="n7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;endArrow=none;dashed=1;fontFamily=Times New Roman;fontSize=11;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell></root></mxGraphModel></diagram></mxfile>

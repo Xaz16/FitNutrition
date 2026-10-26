@@ -1,0 +1,52 @@
+digraph {
+	graph [bb="0 0 375 651",
+		bgcolor=white,
+		nodesep=0.35,
+		pad=0.2,
+		rankdir=TB,
+		ranksep=0.45,
+		splines=polyline
+	];
+	node [color=black,
+		fontname="Times New Roman",
+		fontsize=13,
+		label="\N",
+		margin="0.15,0.12",
+		style=solid
+	];
+	edge [arrowsize=0.65,
+		fontname="Times New Roman",
+		fontsize=11
+	];
+	start	[label="",
+		shape=point];
+	request	[label="Запросить обновление цен",
+		shape=box];
+	start -> request;
+	provider	[label="Обратиться к PriceProvider",
+		shape=box];
+	request -> provider;
+	ok	[label="Источник ответил?",
+		shape=diamond];
+	provider -> ok;
+	update	[label="Атомарно сохранить цены
+и дату набора",
+		shape=box];
+	ok -> update	[label="[да]"];
+	keep	[label="Оставить предыдущие цены
+Ответить 503 с кодом ошибки",
+		shape=box];
+	ok -> keep	[label="[нет]"];
+	end	[label="",
+		shape=doublecircle];
+	update -> end;
+	show	[label="Показать сообщение и дату
+Не подставлять нулевые цены",
+		shape=box];
+	keep -> show;
+	retry	[label="Повторить запрос?",
+		shape=diamond];
+	show -> retry;
+	retry -> request	[label="[да]"];
+	retry -> end	[label="[нет]"];
+}

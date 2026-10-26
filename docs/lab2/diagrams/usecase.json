@@ -1,0 +1,197 @@
+{
+  "directed": true,
+  "graphAttributes": {
+    "rankdir": "LR",
+    "bgcolor": "white",
+    "pad": 0.2,
+    "nodesep": 0.35,
+    "ranksep": 0.45,
+    "splines": "polyline"
+  },
+  "nodeAttributes": {
+    "fontname": "Times New Roman",
+    "fontsize": 13,
+    "margin": "0.15,0.12",
+    "style": "solid",
+    "color": "black"
+  },
+  "edgeAttributes": {
+    "fontname": "Times New Roman",
+    "fontsize": 11,
+    "arrowsize": 0.65
+  },
+  "nodes": [
+    {
+      "name": "actor",
+      "attributes": {
+        "label": "Пользователь\n(взрослый)",
+        "shape": "plaintext"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "tail": "actor",
+      "head": "login",
+      "attributes": {
+        "label": "",
+        "arrowhead": "none"
+      }
+    },
+    {
+      "tail": "actor",
+      "head": "prefs",
+      "attributes": {
+        "label": "",
+        "arrowhead": "none"
+      }
+    },
+    {
+      "tail": "actor",
+      "head": "plan",
+      "attributes": {
+        "label": "",
+        "arrowhead": "none"
+      }
+    },
+    {
+      "tail": "actor",
+      "head": "replace",
+      "attributes": {
+        "label": "",
+        "arrowhead": "none"
+      }
+    },
+    {
+      "tail": "actor",
+      "head": "recipe",
+      "attributes": {
+        "label": "",
+        "arrowhead": "none"
+      }
+    },
+    {
+      "tail": "actor",
+      "head": "list",
+      "attributes": {
+        "label": "",
+        "arrowhead": "none"
+      }
+    },
+    {
+      "tail": "actor",
+      "head": "stock",
+      "attributes": {
+        "label": "",
+        "arrowhead": "none"
+      }
+    },
+    {
+      "tail": "actor",
+      "head": "basket",
+      "attributes": {
+        "label": "",
+        "arrowhead": "none"
+      }
+    },
+    {
+      "tail": "plan",
+      "head": "list",
+      "attributes": {
+        "label": "«include»",
+        "style": "dashed"
+      }
+    },
+    {
+      "tail": "basket",
+      "head": "packs",
+      "attributes": {
+        "label": "«include»",
+        "style": "dashed"
+      }
+    },
+    {
+      "tail": "replace",
+      "head": "list",
+      "attributes": {
+        "label": "«include»",
+        "style": "dashed"
+      }
+    }
+  ],
+  "subgraphs": [
+    {
+      "name": "cluster_system",
+      "graphAttributes": {
+        "label": "Fit Nutrition Supply",
+        "fontname": "Times New Roman",
+        "fontsize": 15
+      },
+      "nodes": [
+        {
+          "name": "login",
+          "attributes": {
+            "label": "Зарегистрироваться / войти",
+            "shape": "ellipse"
+          }
+        },
+        {
+          "name": "prefs",
+          "attributes": {
+            "label": "Задать параметры,\nбюджет и исключения",
+            "shape": "ellipse"
+          }
+        },
+        {
+          "name": "plan",
+          "attributes": {
+            "label": "Составить меню",
+            "shape": "ellipse"
+          }
+        },
+        {
+          "name": "replace",
+          "attributes": {
+            "label": "Заменить блюдо",
+            "shape": "ellipse"
+          }
+        },
+        {
+          "name": "recipe",
+          "attributes": {
+            "label": "Просмотреть рецепт",
+            "shape": "ellipse"
+          }
+        },
+        {
+          "name": "list",
+          "attributes": {
+            "label": "Получить список покупок",
+            "shape": "ellipse"
+          }
+        },
+        {
+          "name": "stock",
+          "attributes": {
+            "label": "Учесть домашние запасы",
+            "shape": "ellipse"
+          }
+        },
+        {
+          "name": "basket",
+          "attributes": {
+            "label": "Сравнить полные корзины",
+            "shape": "ellipse"
+          }
+        },
+        {
+          "name": "packs",
+          "attributes": {
+            "label": "Рассчитать целые упаковки",
+            "shape": "ellipse"
+          }
+        }
+      ]
+    }
+  ]
+}

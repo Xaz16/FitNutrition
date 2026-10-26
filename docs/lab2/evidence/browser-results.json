@@ -1,0 +1,77 @@
+{
+  "browser": "155.0.8059.85",
+  "date": "2026-10-25T19:23:09.795Z",
+  "layouts": [
+    {
+      "width": 360,
+      "screen": "settings",
+      "overflow": false
+    },
+    {
+      "width": 360,
+      "screen": "menu",
+      "overflow": false
+    },
+    {
+      "width": 360,
+      "screen": "shopping",
+      "overflow": false
+    },
+    {
+      "width": 360,
+      "screen": "baskets",
+      "overflow": false
+    },
+    {
+      "width": 768,
+      "screen": "settings",
+      "overflow": false
+    },
+    {
+      "width": 768,
+      "screen": "menu",
+      "overflow": false
+    },
+    {
+      "width": 768,
+      "screen": "shopping",
+      "overflow": false
+    },
+    {
+      "width": 768,
+      "screen": "baskets",
+      "overflow": false
+    },
+    {
+      "width": 1920,
+      "screen": "settings",
+      "overflow": false
+    },
+    {
+      "width": 1920,
+      "screen": "menu",
+      "overflow": false
+    },
+    {
+      "width": 1920,
+      "screen": "shopping",
+      "overflow": false
+    },
+    {
+      "width": 1920,
+      "screen": "baskets",
+      "overflow": false
+    }
+  ],
+  "consoleErrors": [],
+  "checks": [
+    "demo",
+    "generate",
+    "replace",
+    "pantry",
+    "five stores",
+    "price failure retains data",
+    "reload persists plan",
+    "anonymous denied"
+  ]
+}

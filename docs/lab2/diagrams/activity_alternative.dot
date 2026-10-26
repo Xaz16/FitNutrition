@@ -1,0 +1,58 @@
+digraph {
+	graph [bb="0 0 457 755",
+		bgcolor=white,
+		nodesep=0.35,
+		pad=0.2,
+		rankdir=TB,
+		ranksep=0.45,
+		splines=polyline
+	];
+	node [color=black,
+		fontname="Times New Roman",
+		fontsize=13,
+		label="\N",
+		margin="0.15,0.12",
+		style=solid
+	];
+	edge [arrowsize=0.65,
+		fontname="Times New Roman",
+		fontsize=11
+	];
+	start	[label="",
+		shape=point];
+	open	[label="Открыть блюдо и запросить замены",
+		shape=box];
+	start -> open;
+	filter	[label="Проверить состав, время,
+тип приёма и лимит повторов",
+		shape=box];
+	open -> filter;
+	exists	[label="Есть варианты?",
+		shape=diamond];
+	filter -> exists;
+	none	[label="Сообщить об отсутствии вариантов
+Блюдо оставить",
+		shape=box];
+	exists -> none	[label="[нет]"];
+	choose	[label="Выбрать альтернативу",
+		shape=box];
+	exists -> choose	[label="[да]"];
+	end	[label="",
+		shape=doublecircle];
+	none -> end;
+	confirm	[label="Замена подтверждена?",
+		shape=diamond];
+	choose -> confirm;
+	cancel	[label="Закрыть без изменения плана",
+		shape=box];
+	confirm -> cancel	[label="[нет]"];
+	update	[label="Проверить владельца и ограничения
+Сохранить новую позицию",
+		shape=box];
+	confirm -> update	[label="[да]"];
+	cancel -> end;
+	recalc	[label="Пересчитать день, список и корзины",
+		shape=box];
+	update -> recalc;
+	recalc -> end;
+}

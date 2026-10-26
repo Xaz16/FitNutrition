@@ -1,0 +1,51 @@
+digraph {
+	graph [bb="0 0 644 445",
+		bgcolor=white,
+		nodesep=0.35,
+		pad=0.2,
+		rankdir=TB,
+		ranksep=0.45,
+		splines=polyline
+	];
+	node [color=black,
+		fontname="Times New Roman",
+		fontsize=13,
+		margin="0.15,0.12",
+		style=solid
+	];
+	edge [arrowsize=0.65,
+		fontname="Times New Roman",
+		fontsize=11
+	];
+	ui	[label="Браузерный интерфейс
+HTML / CSS / JavaScript",
+		shape=box];
+	http	[label="HTTP API
+Маршруты, JSON, ошибки, сессия",
+		shape=box];
+	ui -> http	[label="HTTP / JSON"];
+	auth	[label="AuthService
+Регистрация, вход, bcrypt",
+		shape=box];
+	http -> auth;
+	domain	[label="Прикладные функции domain.py
+Нормы → меню → список → корзины",
+		shape=box];
+	http -> domain;
+	repo	[label="Repository / server.py
+SQL, владение данными, транзакции",
+		shape=box];
+	http -> repo;
+	auth -> repo;
+	domain -> repo	[dir=both,
+		label="данные через API-обработчик"];
+	provider	[label="DemoPriceProvider
+Учебные предложения
+Будущий внешний адаптер",
+		shape=box];
+	provider -> repo	[label="fixtures / offers"];
+	db	[label="SQLite
+Учётные записи, планы, каталог, цены",
+		shape=cylinder];
+	repo -> db	[label="SQL + параметры"];
+}

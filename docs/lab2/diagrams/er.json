@@ -1,0 +1,212 @@
+{
+  "directed": true,
+  "graphAttributes": {
+    "rankdir": "LR",
+    "bgcolor": "white",
+    "pad": 0.2,
+    "nodesep": 0.35,
+    "ranksep": 0.45,
+    "splines": "polyline"
+  },
+  "nodeAttributes": {
+    "fontname": "Times New Roman",
+    "fontsize": 12,
+    "margin": "0.15,0.12",
+    "style": "solid",
+    "color": "black"
+  },
+  "edgeAttributes": {
+    "fontname": "Times New Roman",
+    "fontsize": 11,
+    "arrowsize": 0.65
+  },
+  "nodes": [
+    {
+      "name": "users",
+      "attributes": {
+        "label": "USERS\n────────────\nid TEXT PK\nemail TEXT UNIQUE\npassword_hash TEXT\ncreated_at TEXT",
+        "shape": "box"
+      }
+    },
+    {
+      "name": "sessions",
+      "attributes": {
+        "label": "SESSIONS\n────────────\ntoken_hash TEXT PK\nuser_id TEXT FK\nexpires_at REAL",
+        "shape": "box"
+      }
+    },
+    {
+      "name": "login_attempts",
+      "attributes": {
+        "label": "LOGIN_ATTEMPTS\n────────────\nemail TEXT PK(1)\nattempted_at REAL PK(2)",
+        "shape": "box"
+      }
+    },
+    {
+      "name": "profiles",
+      "attributes": {
+        "label": "PROFILES\n────────────\nuser_id TEXT PK FK\nsettings_json TEXT",
+        "shape": "box"
+      }
+    },
+    {
+      "name": "plans",
+      "attributes": {
+        "label": "PLANS\n────────────\nid TEXT PK\nuser_id TEXT FK\nstart_date TEXT\ndays INTEGER\nsettings_json TEXT\ncreated_at TEXT",
+        "shape": "box"
+      }
+    },
+    {
+      "name": "plan_items",
+      "attributes": {
+        "label": "PLAN_ITEMS\n────────────\nid TEXT PK\nplan_id TEXT FK\nday INTEGER\nslot INTEGER\nrecipe_id TEXT FK\nscale REAL\nUNIQUE(plan_id, day, slot)",
+        "shape": "box"
+      }
+    },
+    {
+      "name": "recipes",
+      "attributes": {
+        "label": "RECIPES\n────────────\nid TEXT PK\nname TEXT\nmeal TEXT\nminutes INTEGER\ningredients_json TEXT\nsteps_json TEXT",
+        "shape": "box"
+      }
+    },
+    {
+      "name": "ingredients",
+      "attributes": {
+        "label": "INGREDIENTS\n────────────\nid TEXT PK\nname TEXT\ncategory TEXT\nunit TEXT\nkcal REAL\nprotein REAL\nfat REAL\ncarbs REAL\nallergens_json TEXT",
+        "shape": "box"
+      }
+    },
+    {
+      "name": "stores",
+      "attributes": {
+        "label": "STORES\n────────────\nid TEXT PK\nname TEXT",
+        "shape": "box"
+      }
+    },
+    {
+      "name": "offers",
+      "attributes": {
+        "label": "OFFERS\n────────────\nid TEXT PK\nstore_id TEXT FK\ningredient_id TEXT FK\npack_size REAL\nprice_kopecks INTEGER\navailable INTEGER\nupdated_at TEXT\nsource TEXT\ncity TEXT",
+        "shape": "box"
+      }
+    },
+    {
+      "name": "pantry",
+      "attributes": {
+        "label": "PANTRY\n────────────\nuser_id TEXT PK(1) FK\ningredient_id TEXT PK(2) FK\namount REAL\npurchased INTEGER",
+        "shape": "box"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "tail": "users",
+      "head": "sessions",
+      "attributes": {
+        "label": "",
+        "dir": "none",
+        "taillabel": "1",
+        "headlabel": "0..*",
+        "labeldistance": 2
+      }
+    },
+    {
+      "tail": "users",
+      "head": "plans",
+      "attributes": {
+        "label": "",
+        "dir": "none",
+        "taillabel": "1",
+        "headlabel": "0..*",
+        "labeldistance": 2
+      }
+    },
+    {
+      "tail": "plans",
+      "head": "plan_items",
+      "attributes": {
+        "label": "",
+        "dir": "none",
+        "taillabel": "1",
+        "headlabel": "0..*",
+        "labeldistance": 2
+      }
+    },
+    {
+      "tail": "recipes",
+      "head": "plan_items",
+      "attributes": {
+        "label": "",
+        "dir": "none",
+        "taillabel": "1",
+        "headlabel": "0..*",
+        "labeldistance": 2
+      }
+    },
+    {
+      "tail": "stores",
+      "head": "offers",
+      "attributes": {
+        "label": "",
+        "dir": "none",
+        "taillabel": "1",
+        "headlabel": "0..*",
+        "labeldistance": 2
+      }
+    },
+    {
+      "tail": "ingredients",
+      "head": "offers",
+      "attributes": {
+        "label": "",
+        "dir": "none",
+        "taillabel": "1",
+        "headlabel": "0..*",
+        "labeldistance": 2
+      }
+    },
+    {
+      "tail": "users",
+      "head": "pantry",
+      "attributes": {
+        "label": "",
+        "dir": "none",
+        "taillabel": "1",
+        "headlabel": "0..*",
+        "labeldistance": 2
+      }
+    },
+    {
+      "tail": "ingredients",
+      "head": "pantry",
+      "attributes": {
+        "label": "",
+        "dir": "none",
+        "taillabel": "1",
+        "headlabel": "0..*",
+        "labeldistance": 2
+      }
+    },
+    {
+      "tail": "users",
+      "head": "profiles",
+      "attributes": {
+        "label": "",
+        "dir": "none",
+        "taillabel": "1",
+        "headlabel": "0..1",
+        "labeldistance": 2
+      }
+    },
+    {
+      "tail": "recipes",
+      "head": "ingredients",
+      "attributes": {
+        "label": "ссылки id в JSON\nбез SQL FK",
+        "style": "dashed",
+        "dir": "none"
+      }
+    }
+  ]
+}
