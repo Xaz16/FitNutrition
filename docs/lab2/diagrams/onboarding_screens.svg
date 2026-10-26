@@ -1,0 +1,129 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1260" height="1000" viewBox="0 0 1260 1000"><defs><marker id="arrow" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><path d="M0 0L9 4L0 8" fill="none" stroke="black"/></marker></defs><rect width="100%" height="100%" fill="white"/>
+<text x="25" y="32" font-family="Times New Roman" font-size="23" font-weight="bold">Fit Nutrition Supply: онбординг профиля</text>
+<rect x="25" y="70" width="580" height="420" fill="white" stroke="black"/>
+<text x="315.0" y="285.0" text-anchor="middle" font-family="Times New Roman" font-size="14" font-weight="normal"></text>
+<text x="315.0" y="100.0" text-anchor="middle" font-family="Times New Roman" font-size="18" font-weight="bold">Шаг 1 из 4</text>
+<rect x="45" y="117" width="130" height="4" fill="#ededed" stroke="black"/>
+<text x="110.0" y="124.0" text-anchor="middle" font-family="Times New Roman" font-size="14" font-weight="normal"></text>
+<rect x="185" y="117" width="130" height="4" fill="white" stroke="black"/>
+<text x="250.0" y="124.0" text-anchor="middle" font-family="Times New Roman" font-size="14" font-weight="normal"></text>
+<rect x="325" y="117" width="130" height="4" fill="white" stroke="black"/>
+<text x="390.0" y="124.0" text-anchor="middle" font-family="Times New Roman" font-size="14" font-weight="normal"></text>
+<rect x="465" y="117" width="130" height="4" fill="white" stroke="black"/>
+<text x="530.0" y="124.0" text-anchor="middle" font-family="Times New Roman" font-size="14" font-weight="normal"></text>
+<text x="315.0" y="154.0" text-anchor="middle" font-family="Times New Roman" font-size="18" font-weight="bold">Базовые параметры</text>
+<rect x="45" y="180" width="90" height="35" fill="#ededed" stroke="black"/>
+<text x="90.0" y="202.5" text-anchor="middle" font-family="Times New Roman" font-size="14" font-weight="normal">М</text>
+<rect x="145" y="180" width="90" height="35" fill="white" stroke="black"/>
+<text x="190.0" y="202.5" text-anchor="middle" font-family="Times New Roman" font-size="14" font-weight="normal">Ж</text>
+<text x="180.0" y="252.5" text-anchor="middle" font-family="Times New Roman" font-size="14" font-weight="normal">Возраст</text>
+<text x="495.0" y="252.5" text-anchor="middle" font-family="Times New Roman" font-size="18" font-weight="bold">30 лет</text>
+<rect x="50" y="269" width="520" height="3" fill="white" stroke="black"/>
+<text x="310.0" y="275.5" text-anchor="middle" font-family="Times New Roman" font-size="14" font-weight="normal"></text>
+<rect x="205" y="263" width="12" height="15" fill="#ededed" stroke="black"/>
+<text x="211.0" y="275.5" text-anchor="middle" font-family="Times New Roman" font-size="14" font-weight="normal"></text>
+<text x="160.0" y="285.0" text-anchor="middle" font-family="Times New Roman" font-size="14" font-weight="normal">14-90</text>
+<text x="180.0" y="315.5" text-anchor="middle" font-family="Times New Roman" font-size="14" font-weight="normal">Вес</text>
+<text x="495.0" y="315.5" text-anchor="middle" font-family="Times New Roman" font-size="18" font-weight="bold">80,5 кг</text>
+<rect x="50" y="332" width="520" height="3" fill="white" stroke="black"/>
+<text x="310.0" y="338.5" text-anchor="middle" font-family="Times New Roman" font-size="14" font-weight="normal"></text>
+<rect x="205" y="326" width="12" height="15" fill="#ededed" stroke="black"/>
+<text x="211.0" y="338.5" text-anchor="middle" font-family="Times New Roman" font-size="14" font-weight="normal"></text>
+<text x="160.0" y="348.0" text-anchor="middle" font-family="Times New Roman" font-size="14" font-weight="normal">40-200, шаг 0,5</text>
+<text x="180.0" y="378.5" text-anchor="middle" font-family="Times New Roman" font-size="14" font-weight="normal">Рост</text>
+<text x="495.0" y="378.5" text-anchor="middle" font-family="Times New Roman" font-size="18" font-weight="bold">180 см</text>
+<rect x="50" y="395" width="520" height="3" fill="white" stroke="black"/>
+<text x="310.0" y="401.5" text-anchor="middle" font-family="Times New Roman" font-size="14" font-weight="normal"></text>
+<rect x="205" y="389" width="12" height="15" fill="#ededed" stroke="black"/>
+<text x="211.0" y="401.5" text-anchor="middle" font-family="Times New Roman" font-size="14" font-weight="normal"></text>
+<text x="160.0" y="411.0" text-anchor="middle" font-family="Times New Roman" font-size="14" font-weight="normal">140-220, шаг 1</text>
+<rect x="355" y="442" width="230" height="32" fill="#ededed" stroke="black"/>
+<text x="470.0" y="463.0" text-anchor="middle" font-family="Times New Roman" font-size="14" font-weight="bold">Далее</text>
+<rect x="655" y="70" width="580" height="420" fill="white" stroke="black"/>
+<text x="945.0" y="285.0" text-anchor="middle" font-family="Times New Roman" font-size="14" font-weight="normal"></text>
+<text x="945.0" y="100.0" text-anchor="middle" font-family="Times New Roman" font-size="18" font-weight="bold">Шаг 2 из 4</text>
+<rect x="675" y="117" width="130" height="4" fill="#ededed" stroke="black"/>
+<text x="740.0" y="124.0" text-anchor="middle" font-family="Times New Roman" font-size="14" font-weight="normal"></text>
+<rect x="815" y="117" width="130" height="4" fill="#ededed" stroke="black"/>
+<text x="880.0" y="124.0" text-anchor="middle" font-family="Times New Roman" font-size="14" font-weight="normal"></text>
+<rect x="955" y="117" width="130" height="4" fill="white" stroke="black"/>
+<text x="1020.0" y="124.0" text-anchor="middle" font-family="Times New Roman" font-size="14" font-weight="normal"></text>
+<rect x="1095" y="117" width="130" height="4" fill="white" stroke="black"/>
+<text x="1160.0" y="124.0" text-anchor="middle" font-family="Times New Roman" font-size="14" font-weight="normal"></text>
+<text x="945.0" y="154.0" text-anchor="middle" font-family="Times New Roman" font-size="18" font-weight="bold">Активность и цель</text>
+<rect x="675" y="173" width="540" height="42" fill="white" stroke="black"/>
+<text x="945.0" y="199.0" text-anchor="middle" font-family="Times New Roman" font-size="14" font-weight="normal">○ Низкая: Сидячий день</text>
+<rect x="675" y="222" width="540" height="42" fill="#ededed" stroke="black"/>
+<text x="945.0" y="248.0" text-anchor="middle" font-family="Times New Roman" font-size="14" font-weight="normal">○ Лёгкая: 1-3 тренировки в неделю</text>
+<rect x="675" y="271" width="540" height="42" fill="white" stroke="black"/>
+<text x="945.0" y="297.0" text-anchor="middle" font-family="Times New Roman" font-size="14" font-weight="normal">○ Средняя: 3-5 тренировок в неделю</text>
+<rect x="675" y="320" width="540" height="42" fill="white" stroke="black"/>
+<text x="945.0" y="346.0" text-anchor="middle" font-family="Times New Roman" font-size="14" font-weight="normal">○ Высокая: Активная работа</text>
+<rect x="675" y="385" width="174" height="40" fill="#ededed" stroke="black"/>
+<text x="762.0" y="410.0" text-anchor="middle" font-family="Times New Roman" font-size="14" font-weight="normal">Похудение</text>
+<rect x="858" y="385" width="174" height="40" fill="white" stroke="black"/>
+<text x="945.0" y="410.0" text-anchor="middle" font-family="Times New Roman" font-size="14" font-weight="normal">Поддержание</text>
+<rect x="1041" y="385" width="174" height="40" fill="white" stroke="black"/>
+<text x="1128.0" y="410.0" text-anchor="middle" font-family="Times New Roman" font-size="14" font-weight="normal">Набор</text>
+<rect x="675" y="442" width="110" height="32" fill="white" stroke="black"/>
+<text x="730.0" y="463.0" text-anchor="middle" font-family="Times New Roman" font-size="14" font-weight="normal">Назад</text>
+<rect x="985" y="442" width="230" height="32" fill="#ededed" stroke="black"/>
+<text x="1100.0" y="463.0" text-anchor="middle" font-family="Times New Roman" font-size="14" font-weight="bold">Далее</text>
+<rect x="25" y="530" width="580" height="420" fill="white" stroke="black"/>
+<text x="315.0" y="745.0" text-anchor="middle" font-family="Times New Roman" font-size="14" font-weight="normal"></text>
+<text x="315.0" y="560.0" text-anchor="middle" font-family="Times New Roman" font-size="18" font-weight="bold">Шаг 3 из 4</text>
+<rect x="45" y="577" width="130" height="4" fill="#ededed" stroke="black"/>
+<text x="110.0" y="584.0" text-anchor="middle" font-family="Times New Roman" font-size="14" font-weight="normal"></text>
+<rect x="185" y="577" width="130" height="4" fill="#ededed" stroke="black"/>
+<text x="250.0" y="584.0" text-anchor="middle" font-family="Times New Roman" font-size="14" font-weight="normal"></text>
+<rect x="325" y="577" width="130" height="4" fill="#ededed" stroke="black"/>
+<text x="390.0" y="584.0" text-anchor="middle" font-family="Times New Roman" font-size="14" font-weight="normal"></text>
+<rect x="465" y="577" width="130" height="4" fill="white" stroke="black"/>
+<text x="530.0" y="584.0" text-anchor="middle" font-family="Times New Roman" font-size="14" font-weight="normal"></text>
+<text x="315.0" y="614.0" text-anchor="middle" font-family="Times New Roman" font-size="18" font-weight="bold">Ограничения: можно пропустить</text>
+<rect x="45" y="636" width="540" height="75" fill="white" stroke="black"/>
+<text x="315.0" y="669.5" text-anchor="middle" font-family="Times New Roman" font-size="14" font-weight="normal">Аллергии: множественный выбор</text>
+<text x="315.0" y="687.5" text-anchor="middle" font-family="Times New Roman" font-size="14" font-weight="normal">□ Молоко   □ Рыба   □ Арахис   □ Другое</text>
+<rect x="45" y="723" width="540" height="65" fill="white" stroke="black"/>
+<text x="315.0" y="751.5" text-anchor="middle" font-family="Times New Roman" font-size="14" font-weight="normal">Предпочтения</text>
+<text x="315.0" y="769.5" text-anchor="middle" font-family="Times New Roman" font-size="14" font-weight="normal">□ Без мяса   □ Без рыбы   □ Без молочного</text>
+<text x="195.0" y="825.5" text-anchor="middle" font-family="Times New Roman" font-size="14" font-weight="normal">Бюджет на неделю</text>
+<text x="495.0" y="825.5" text-anchor="middle" font-family="Times New Roman" font-size="18" font-weight="bold">Не указан</text>
+<rect x="50" y="851" width="520" height="3" fill="white" stroke="black"/>
+<text x="310.0" y="857.5" text-anchor="middle" font-family="Times New Roman" font-size="14" font-weight="normal"></text>
+<text x="315.0" y="878.0" text-anchor="middle" font-family="Times New Roman" font-size="14" font-weight="normal">500-10000 ₽, шаг 100</text>
+<rect x="45" y="902" width="110" height="32" fill="white" stroke="black"/>
+<text x="100.0" y="923.0" text-anchor="middle" font-family="Times New Roman" font-size="14" font-weight="normal">Назад</text>
+<rect x="355" y="902" width="230" height="32" fill="#ededed" stroke="black"/>
+<text x="470.0" y="923.0" text-anchor="middle" font-family="Times New Roman" font-size="14" font-weight="bold">Далее</text>
+<rect x="655" y="530" width="580" height="420" fill="white" stroke="black"/>
+<text x="945.0" y="745.0" text-anchor="middle" font-family="Times New Roman" font-size="14" font-weight="normal"></text>
+<text x="945.0" y="560.0" text-anchor="middle" font-family="Times New Roman" font-size="18" font-weight="bold">Шаг 4 из 4</text>
+<rect x="675" y="577" width="130" height="4" fill="#ededed" stroke="black"/>
+<text x="740.0" y="584.0" text-anchor="middle" font-family="Times New Roman" font-size="14" font-weight="normal"></text>
+<rect x="815" y="577" width="130" height="4" fill="#ededed" stroke="black"/>
+<text x="880.0" y="584.0" text-anchor="middle" font-family="Times New Roman" font-size="14" font-weight="normal"></text>
+<rect x="955" y="577" width="130" height="4" fill="#ededed" stroke="black"/>
+<text x="1020.0" y="584.0" text-anchor="middle" font-family="Times New Roman" font-size="14" font-weight="normal"></text>
+<rect x="1095" y="577" width="130" height="4" fill="#ededed" stroke="black"/>
+<text x="1160.0" y="584.0" text-anchor="middle" font-family="Times New Roman" font-size="14" font-weight="normal"></text>
+<text x="945.0" y="614.0" text-anchor="middle" font-family="Times New Roman" font-size="18" font-weight="bold">Проверьте профиль</text>
+<rect x="675" y="635" width="530" height="70" fill="white" stroke="black"/>
+<text x="940.0" y="666.0" text-anchor="middle" font-family="Times New Roman" font-size="14" font-weight="normal">Параметры</text>
+<text x="940.0" y="684.0" text-anchor="middle" font-family="Times New Roman" font-size="14" font-weight="normal">Пол, возраст, вес, рост</text>
+<text x="1132.5" y="654.0" text-anchor="middle" font-family="Times New Roman" font-size="14" font-weight="normal">Изменить</text>
+<rect x="675" y="716" width="530" height="70" fill="white" stroke="black"/>
+<text x="940.0" y="747.0" text-anchor="middle" font-family="Times New Roman" font-size="14" font-weight="normal">Активность и цель</text>
+<text x="940.0" y="765.0" text-anchor="middle" font-family="Times New Roman" font-size="14" font-weight="normal">Выбранные активность и цель</text>
+<text x="1132.5" y="735.0" text-anchor="middle" font-family="Times New Roman" font-size="14" font-weight="normal">Изменить</text>
+<rect x="675" y="797" width="530" height="70" fill="white" stroke="black"/>
+<text x="940.0" y="828.0" text-anchor="middle" font-family="Times New Roman" font-size="14" font-weight="normal">Ограничения</text>
+<text x="940.0" y="846.0" text-anchor="middle" font-family="Times New Roman" font-size="14" font-weight="normal">Аллергии, предпочтения, бюджет</text>
+<text x="1132.5" y="816.0" text-anchor="middle" font-family="Times New Roman" font-size="14" font-weight="normal">Изменить</text>
+<rect x="1212" y="636" width="4" height="231" fill="#ededed" stroke="black"/>
+<text x="1214.0" y="756.5" text-anchor="middle" font-family="Times New Roman" font-size="14" font-weight="normal"></text>
+<rect x="675" y="902" width="110" height="32" fill="white" stroke="black"/>
+<text x="730.0" y="923.0" text-anchor="middle" font-family="Times New Roman" font-size="14" font-weight="normal">Назад</text>
+<rect x="985" y="902" width="230" height="32" fill="#ededed" stroke="black"/>
+<text x="1100.0" y="923.0" text-anchor="middle" font-family="Times New Roman" font-size="14" font-weight="bold">Сохранить профиль</text>
+</svg>

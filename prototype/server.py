@@ -18,6 +18,7 @@ import bcrypt
 from catalog import seed, ALLERGENS
 from domain import DomainError, validate_settings, nutrition, allowed, generate_plan, shopping, calculate_baskets
 from prices import DemoPriceProvider,PriceSourceUnavailable
+from profiles import validate_profile,plan_settings,profile_fingerprint
 
 ROOT=Path(__file__).resolve().parent
 DB_PATH=ROOT/'data/fitnutrition.sqlite3'
@@ -53,9 +54,13 @@ def snapshot(db,user):
  ingredients,recipes=catalog(db)
  profile=db.execute('SELECT settings_json FROM profiles WHERE user_id=?',(user,)).fetchone()
  plan=db.execute('SELECT * FROM plans WHERE user_id=? ORDER BY created_at DESC,id DESC LIMIT 1',(user,)).fetchone()
- result={'profile':json.loads(profile[0]) if profile else None,'ingredients':list(ingredients.values()),'recipes':list(recipes.values()),'allergens':ALLERGENS,'plan':None,'test_data':True}
- if not plan:return result
+ saved=json.loads(profile[0]) if profile else None
+ result={'profile':saved,'profile_complete':bool(saved and saved.get('completed')),'ingredients':list(ingredients.values()),'recipes':list(recipes.values()),'allergens':ALLERGENS,'plan':None,'test_data':True}
+ if not plan or not result['profile_complete']:return result
  settings=json.loads(plan['settings_json'])
+ if settings.get('profile_fingerprint')!=profile_fingerprint(saved):
+  result['previous_plan_requires_update']=True
+  return result
  items=[dict(r) for r in db.execute('SELECT * FROM plan_items WHERE plan_id=? ORDER BY day,slot',(plan['id'],))]
  for item in items:item['nutrition']=nutrition(recipes[item['recipe_id']],ingredients,item['scale'])
  pantry={r['ingredient_id']:dict(r) for r in db.execute('SELECT * FROM pantry WHERE user_id=?',(user,))}
@@ -109,7 +114,7 @@ class Handler(BaseHTTPRequestHandler):
   try:
    if not path.startswith('/api/'):
     if method!='GET':return self.send_json({'error':'Метод не поддерживается'},405)
-    filename={'/':'index.html','/index.html':'index.html','/app.js':'app.js','/style.css':'style.css'}.get(path)
+    filename={'/':'index.html','/index.html':'index.html','/app.js':'app.js','/flow.js':'flow.js','/style.css':'style.css'}.get(path)
     if not filename:return self.send_json({'error':'Не найдено'},404)
     body=(ROOT/'static'/filename).read_bytes()
     self.send_response(200);self.send_header('Content-Type',{'html':'text/html; charset=utf-8','js':'text/javascript; charset=utf-8','css':'text/css; charset=utf-8'}[filename.rsplit('.',1)[-1]])
@@ -132,6 +137,7 @@ class Handler(BaseHTTPRequestHandler):
      if path.endswith('/demo'):
       user=uuid.uuid4().hex
       db.execute('INSERT INTO users VALUES (?,?,?,?)',(user,f'demo-{user[:8]}@example.invalid','!disabled',now()))
+      db.execute('INSERT INTO profiles VALUES (?,?)',(user,json.dumps({'name':'Гость','completed':False})))
       return self.send_json({'ok':True,'demo':True},cookie=self.new_session(db,user))
      if not re.fullmatch(r'[^\s@]+@[^\s@]+\.[^\s@]+',email) or len(email)>254:raise DomainError('Укажите корректный email',{'email':'Проверьте email'})
      if not 8<=len(password) or len(password.encode())>72:raise DomainError('Пароль: от 8 символов, не более 72 байт',{'password':'Проверьте длину пароля'})
@@ -139,6 +145,9 @@ class Handler(BaseHTTPRequestHandler):
       if db.execute('SELECT id FROM users WHERE email=?',(email,)).fetchone():raise DomainError('Этот email уже зарегистрирован',{'email':'Email занят'})
       user=uuid.uuid4().hex;hashed=bcrypt.hashpw(password.encode(),bcrypt.gensalt(rounds=12)).decode()
       db.execute('INSERT INTO users VALUES (?,?,?,?)',(user,email,hashed,now()))
+      name=data.get('name',email.split('@')[0])
+      if not isinstance(name,str) or not 1<=len(name.strip())<=60:raise DomainError('Укажите имя до 60 символов')
+      db.execute('INSERT INTO profiles VALUES (?,?)',(user,json.dumps({'name':name.strip(),'completed':False},ensure_ascii=False)))
      else:
       failures=db.execute('SELECT attempted_at FROM login_attempts WHERE email=? AND attempted_at>? ORDER BY attempted_at DESC',(email,time.time()-900)).fetchall()
       if len(failures)>=5:return self.send_json({'error':'Слишком много попыток. Повторите вход через 15 минут.'},429)
@@ -150,19 +159,30 @@ class Handler(BaseHTTPRequestHandler):
      return self.send_json({'ok':True},cookie=self.new_session(db,user))
     user=self.require_user(db)
     if path=='/api/state' and method=='GET':return self.send_json(snapshot(db,user))
+    if path=='/api/profile' and method=='PUT':
+     data=self.read_json();previous=db.execute('SELECT settings_json FROM profiles WHERE user_id=?',(user,)).fetchone()
+     if 'name' not in data:data['name']=json.loads(previous[0]).get('name','Пользователь') if previous else 'Пользователь'
+     saved=validate_profile(data)
+     db.execute('INSERT INTO profiles VALUES (?,?) ON CONFLICT(user_id) DO UPDATE SET settings_json=excluded.settings_json',(user,json.dumps(saved,ensure_ascii=False)))
+     db.commit()
+     return self.send_json(snapshot(db,user))
     if path=='/api/plan' and method=='POST':
-     settings=validate_settings(self.read_json());ingredients,recipes=catalog(db)
+     options=self.read_json();ingredients,recipes=catalog(db)
+     row=db.execute('SELECT settings_json FROM profiles WHERE user_id=?',(user,)).fetchone()
+     settings=plan_settings(json.loads(row[0]) if row else None,options,ingredients)
      if not set(settings['allergens'])<=set(ALLERGENS) or not set(settings['excluded'])<=set(ingredients):raise DomainError('Неизвестное исключение')
      items=generate_plan(settings,recipes,ingredients);ident=uuid.uuid4().hex
      db.execute('INSERT INTO plans VALUES (?,?,?,?,?,?)',(ident,user,settings['start_date'],settings['days'],json.dumps(settings),now()))
      db.executemany('INSERT INTO plan_items VALUES (?,?,?,?,?,?)',[(uuid.uuid4().hex,ident,i['day'],i['slot'],i['recipe_id'],i['scale']) for i in items])
-     db.execute('INSERT INTO profiles VALUES (?,?) ON CONFLICT(user_id) DO UPDATE SET settings_json=excluded.settings_json',(user,json.dumps(settings)))
+     db.commit()
      return self.send_json(snapshot(db,user),201)
     if path in ('/api/alternatives','/api/replace'):
      data=self.read_json() if method=='POST' else {k:v[0] for k,v in parse_qs(urlparse(self.path).query).items()}
      row=db.execute('SELECT i.*,p.settings_json FROM plan_items i JOIN plans p ON p.id=i.plan_id WHERE i.id=? AND p.user_id=?',(data.get('item_id'),user)).fetchone()
      if not row:return self.send_json({'error':'Позиция не найдена'},404)
      ingredients,recipes=catalog(db);settings=json.loads(row['settings_json']);original=recipes[row['recipe_id']]
+     current=db.execute('SELECT settings_json FROM profiles WHERE user_id=?',(user,)).fetchone()
+     if not current or not json.loads(current[0]).get('completed') or settings.get('profile_fingerprint')!=profile_fingerprint(json.loads(current[0])):raise DomainError('Профиль изменён. Составьте план заново.')
      alternatives=[r for r in recipes.values() if r['meal']==original['meal'] and r['id']!=original['id'] and allowed(r,settings,ingredients)]
      # Respect the repetition limit in the actual calendar week of the selected slot.
      from datetime import date,timedelta

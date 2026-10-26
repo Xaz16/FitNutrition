@@ -14,8 +14,9 @@ ROOT=Path(__file__).resolve().parents[1]
 OUT=ROOT/'output/lab2'
 OUT.mkdir(parents=True,exist_ok=True)
 FIGURES=[('structure','Структурная схема системы'),('usecase','Диаграмма вариантов использования'),('activity_main','Основной сценарий'),('activity_alternative','Альтернативный сценарий замены блюда'),('activity_exception','Сценарий ошибки источника цен'),('wireframes','Предварительные экранные формы'),('er','ER-модель прототипа')]
+FIGURES += [('entry_flow','Поток регистрации, профиля, дашборда и плана'),('onboarding_screens','Четыре экрана онбординга')]
 
-def clean(text):return re.sub(r'\*\*(.*?)\*\*',r'\1',text).replace('`','')
+def clean(text):return re.sub(r'\*\*(.*?)\*\*',r'\1',text).replace('`','').replace('—','-')
 def setfont(p,size=14,bold=False):
  for r in p.runs:r.font.name='Times New Roman';r.font.size=Pt(size);r.font.bold=bold;r.font.color.rgb=RGBColor(0,0,0)
 def configure(doc):
@@ -125,7 +126,7 @@ def parse(doc,text,adr=False,counters=None,compact=False):
 def append_figures(doc):
  for index,(name,title) in enumerate(FIGURES,1):
   sec=doc.add_section(WD_SECTION.NEW_PAGE);sec.different_first_page_header_footer=False
-  wide=name in ('usecase','wireframes','er')
+  wide=name in ('usecase','wireframes','er','entry_flow','onboarding_screens')
   landscape=wide or name=='structure'
   if wide:sec.page_width=Cm(42);sec.page_height=Cm(29.7)
   elif landscape:sec.page_width=Cm(29.7);sec.page_height=Cm(21)
