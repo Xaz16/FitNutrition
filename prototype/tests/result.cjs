@@ -1,0 +1,24 @@
+const {chromium}=require(process.env.PLAYWRIGHT_MODULE||'playwright');
+const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict');
+(async()=>{
+ const browser=await chromium.launch({channel:'chrome',headless:true}),context=await browser.newContext({viewport:{width:1440,height:1000},locale:'ru-RU'}),page=await context.newPage();
+ const url=process.env.TEST_URL||'http://127.0.0.1:8767',out=path.resolve(__dirname,'../../tmp/result-browser-qa');fs.mkdirSync(out,{recursive:true});
+ const errors=[],layouts=[];page.on('pageerror',e=>errors.push(e.message));
+ const state=async()=>await(await context.request.get(url+'/api/state')).json();
+ await page.goto(url);await page.getByRole('button',{name:'Открыть демоверсию'}).click();await page.getByRole('heading',{name:'Настройте ваш профиль'}).waitFor();
+ await context.request.put(url+'/api/profile',{data:{name:'Азамат',age:30,sex:'male',height:180,weight:80,activity:1.55,goal:'lose'}});
+ await page.goto(url+'/?prepared=1#settings');await page.locator('#plan-form').waitFor();await page.locator('#budget').fill('500');await page.locator('input[name=preferences][value=no_fish]').check();await page.getByRole('button',{name:'Составить меню',exact:true}).click();
+ await page.getByRole('heading',{name:'Меню готово',exact:true}).waitFor();assert.match(page.url(),/#result$/);assert.equal(await page.locator('.result-day').count(),7);assert.equal(await page.locator('.result-meal').count(),21);assert.equal(await page.locator('.cart-over').count(),1);assert.match(await page.locator('#budget-state').innerText(),/Превышение/);
+ await page.locator('#save-plan').click();await page.locator('#plan-status').filter({hasText:'План сохранён'}).waitFor();await page.reload();await page.locator('#plan-status').filter({hasText:'План сохранён'}).waitFor();
+ for(const width of [360,768,1920]){await page.setViewportSize({width,height:1000});assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);layouts.push({screen:'result',width,overflow:false});await page.screenshot({path:path.join(out,`result-${width}.png`)});}
+ await page.setViewportSize({width:1440,height:1000});const before=await state(),item=before.plan.items[0],epoch=await page.evaluate(()=>performance.timeOrigin);
+ const preview=await(await context.request.get(url+'/api/alternatives?item_id='+item.id)).json();assert.ok(preview.alternatives.length);const choice=preview.alternatives.find(a=>a.cart_delta_kopecks!==0)||preview.alternatives[0];
+ await page.locator('[data-result-replace]').first().click();await page.locator('[data-choose-replacement]').first().waitFor();
+ for(const width of [360,1440]){await page.setViewportSize({width,height:1000});assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);await page.screenshot({path:path.join(out,`alternatives-${width}.png`)});layouts.push({screen:'alternatives',width,overflow:false});}
+ assert.deepEqual((await state()).plan,before.plan);await page.locator('#close-replacement').click();assert.deepEqual((await state()).plan,before.plan);
+ await page.locator('[data-result-replace]').first().click();await page.locator(`[data-choose-replacement="${choice.id}"]`).click();await page.locator('dialog').waitFor({state:'hidden'});await page.locator('.result-meal').first().getByRole('heading',{name:choice.name,exact:true}).waitFor();
+ assert.equal(await page.evaluate(()=>performance.timeOrigin),epoch);const after=await state();const total=after.baskets.find(b=>b.id===after.recommended).total_kopecks;
+ assert.equal(total,choice.cart_total_kopecks);assert.equal(total-preview.baseline_cart_kopecks,choice.cart_delta_kopecks);assert.equal(after.plan.status,'draft');assert.equal(await page.locator('#save-plan').isEnabled(),true);
+ await page.locator('#save-plan').click();await page.locator('#plan-status').filter({hasText:'План сохранён'}).waitFor();await page.locator('#result-settings').click();await page.locator('#plan-form').waitFor();assert.equal(await page.locator('#budget').inputValue(),'500');assert.equal(await page.locator('input[name=preferences][value=no_fish]').isChecked(),true);await page.locator('#back-to-result').click();await page.getByRole('heading',{name:'Меню готово',exact:true}).waitFor();
+ const result={date:new Date().toISOString(),browser:await browser.version(),checks:['all days and meal prices','budget red','save persists after reload','preview and cancel do not write','basket delta matches actual replacement','no document reload','replacement invalidates saved state','settings preserve budget and preferences'],layouts,consoleErrors:errors};assert.deepEqual(errors,[]);fs.writeFileSync(path.join(out,'results.json'),JSON.stringify(result,null,2));await browser.close();console.log(JSON.stringify(result,null,2));
+})().catch(e=>{console.error(e);process.exit(1)});

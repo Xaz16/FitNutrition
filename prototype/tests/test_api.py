@@ -80,4 +80,47 @@ class ApiTests(unittest.TestCase):
   self.assertEqual(status,200);self.assertIsNone(result['profile']['budget_week']);self.assertEqual(self.request('/plan',{})[0],422)
   self.assertEqual(self.save_profile(age=90,weight=200,height=220,budget_week=10000)[0],200)
   for changes in [{'age':13},{'age':91},{'weight':40.25},{'height':180.5},{'budget_week':550}]:self.assertEqual(self.save_profile(**changes)[0],422)
+ def test_replacement_preview_matches_actual_basket_and_does_not_write(self):
+  self.demo();before=self.request('/plan',{})[1];item=before['plan']['items'][0]
+  status,preview=self.request('/alternatives?item_id='+item['id']);self.assertEqual(status,200);self.assertTrue(preview['alternatives'])
+  self.assertEqual(self.request('/state')[1],before)
+  candidate=preview['alternatives'][0]
+  self.assertLess(abs(candidate['planned_nutrition']['kcal']-item['nutrition']['kcal']),.2)
+  status,after=self.request('/replace',{'item_id':item['id'],'recipe_id':candidate['id'],'expected_revision':preview['plan_revision']})
+  self.assertEqual(status,200);self.assertEqual(after['plan']['revision'],1)
+  changed=[i for i,j in zip(before['plan']['items'],after['plan']['items']) if i['recipe_id']!=j['recipe_id']]
+  self.assertEqual(len(changed),1);self.assertEqual(changed[0]['id'],item['id'])
+  total=next(b['total_kopecks'] for b in after['baskets'] if b['id']==after['recommended'])
+  self.assertEqual(total,candidate['cart_total_kopecks']);self.assertEqual(total-preview['baseline_cart_kopecks'],candidate['cart_delta_kopecks'])
+  self.assertEqual(self.request('/replace',{'item_id':item['id'],'recipe_id':candidate['id'],'expected_revision':0})[0],409)
+ def test_save_persists_and_replacement_returns_to_draft(self):
+  self.demo();state=self.request('/plan',{})[1];p=state['plan']
+  self.assertEqual(p['status'],'draft')
+  status,saved=self.request('/plan/save',{'plan_id':p['id'],'expected_revision':p['revision']})
+  self.assertEqual(status,200);self.assertEqual(saved['plan']['status'],'saved');self.assertTrue(saved['plan']['saved_at'])
+  self.assertEqual(self.request('/state')[1]['plan']['status'],'saved')
+  item=p['items'][0];preview=self.request('/alternatives?item_id='+item['id'])[1];candidate=preview['alternatives'][0]
+  after=self.request('/replace',{'item_id':item['id'],'recipe_id':candidate['id'],'expected_revision':0})[1]
+  self.assertEqual(after['plan']['status'],'draft');self.assertIsNone(after['plan']['saved_at'])
+  self.assertEqual(self.request('/plan/save',{'plan_id':p['id'],'expected_revision':0})[0],409)
+ def test_replacement_respects_profile_restrictions_and_calorie_band(self):
+  self.demo();self.save_profile(allergens=['молоко'],preferences=['no_fish'])
+  state=self.request('/plan',{'repeat':7})[1];item=state['plan']['items'][0];recipes={r['id']:r for r in state['recipes']};ingredients={r['id']:r for r in state['ingredients']}
+  preview=self.request('/alternatives?item_id='+item['id'])[1]
+  from domain import nutrition
+  self.assertTrue(preview['alternatives'])
+  for candidate in preview['alternatives']:
+   self.assertNotIn('fish',candidate['ingredients'])
+   self.assertTrue(all('молоко' not in ingredients[i]['allergens'] for i in candidate['ingredients']))
+   kcal=nutrition(candidate,ingredients,item['scale'])['kcal'];self.assertLessEqual(abs(kcal-item['nutrition']['kcal']),item['nutrition']['kcal']*.15+.01)
+ def test_recipe_prices_are_nullable_and_not_purchase_totals(self):
+  self.demo();state=self.request('/plan',{})[1]
+  self.assertTrue(all(isinstance(i['estimated_cost_kopecks'],int) for i in state['plan']['items']))
+  with server.connect() as db:db.execute('UPDATE offers SET available=0')
+  try:
+   missing=self.request('/state')[1];self.assertIsNone(missing['recommended']);self.assertTrue(all(i['estimated_cost_kopecks'] is None for i in missing['plan']['items']))
+   preview=self.request('/alternatives?item_id='+missing['plan']['items'][0]['id'])[1]
+   self.assertTrue(all(a['cart_delta_kopecks'] is None for a in preview['alternatives']))
+  finally:
+   with server.connect() as db:db.execute("UPDATE offers SET available=CASE WHEN store_id='auchan' AND ingredient_id IN ('fish','nuts') THEN 0 ELSE 1 END")
 if __name__=='__main__':unittest.main(verbosity=2)

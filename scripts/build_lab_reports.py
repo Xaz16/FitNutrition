@@ -128,7 +128,8 @@ def append_figures(doc):
   sec=doc.add_section(WD_SECTION.NEW_PAGE);sec.different_first_page_header_footer=False
   wide=name in ('usecase','wireframes','er','entry_flow','onboarding_screens')
   landscape=wide or name=='structure'
-  if wide:sec.page_width=Cm(42);sec.page_height=Cm(29.7)
+  if name=='activity_alternative':sec.page_width=Cm(29.7);sec.page_height=Cm(42)
+  elif wide:sec.page_width=Cm(42);sec.page_height=Cm(29.7)
   elif landscape:sec.page_width=Cm(29.7);sec.page_height=Cm(21)
   else:sec.page_width=Cm(21);sec.page_height=Cm(29.7)
   sec.orientation=WD_ORIENT.LANDSCAPE if landscape else WD_ORIENT.PORTRAIT

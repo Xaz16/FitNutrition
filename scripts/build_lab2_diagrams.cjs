@@ -16,14 +16,26 @@ graphs.usecase=base([n('actor','Пользователь\n(взрослый)','p
  graphs.usecase.subgraphs=[{name:'cluster_system',graphAttributes:{label:'Fit Nutrition Supply',fontname:'Times New Roman',fontsize:15},nodes:graphs.usecase.nodes.filter(v=>v.name!=='actor')}];graphs.usecase.nodes=graphs.usecase.nodes.filter(v=>v.name==='actor');
 graphs.usecase.edgeAttributes.arrowhead='open';
 graphs.activity_main=base([n('start','', 'point'),n('settings','Ввести параметры, период,\nбюджет и исключения'),n('validate','Ввод корректен?','diamond'),n('error','Показать ошибки полей'),n('build','Подобрать блюда\nс учётом ограничений'),n('ready','Меню полное?','diamond'),n('missing','Показать нехватку блюд\nПрежний план сохранить'),n('save','Сохранить план одной транзакцией'),n('list','Суммировать продукты\nи вычесть домашние запасы'),n('compare','Рассчитать упаковки\nи сравнить полные корзины'),n('show','Показать магазин, сумму,\nдату цен и бюджет'),n('end','','doublecircle')],[e('start','settings'),e('settings','validate'),e('validate','error','[нет]'),e('error','settings'),e('validate','build','[да]'),e('build','ready'),e('ready','missing','[нет]'),e('missing','settings'),e('ready','save','[да]'),e('save','list'),e('list','compare'),e('compare','show'),e('show','end')]);
-graphs.activity_alternative=base([n('start','','point'),n('open','Открыть блюдо и запросить замены'),n('filter','Проверить состав, время,\nтип приёма и лимит повторов'),n('exists','Есть варианты?','diamond'),n('none','Сообщить об отсутствии вариантов\nБлюдо оставить'),n('choose','Выбрать альтернативу'),n('confirm','Замена подтверждена?','diamond'),n('cancel','Закрыть без изменения плана'),n('update','Проверить владельца и ограничения\nСохранить новую позицию'),n('recalc','Пересчитать день, список и корзины'),n('end','','doublecircle')],[e('start','open'),e('open','filter'),e('filter','exists'),e('exists','none','[нет]'),e('none','end'),e('exists','choose','[да]'),e('choose','confirm'),e('confirm','cancel','[нет]'),e('cancel','end'),e('confirm','update','[да]'),e('update','recalc'),e('recalc','end')]);
+graphs.activity_alternative=base([
+ n('start','','point'),n('open','Нажать «Заменить» у блюда'),
+ n('filter','Отфильтровать: тип приёма, аллергии,\nпредпочтения, время, повторы,\nкалории в пределах ±15%'),
+ n('exists','Есть варианты?','diamond'),n('none','Показать отсутствие альтернатив\nПлан не изменять'),
+ n('preview','Для каждого варианта пересчитать\nсписок, запасы и целые упаковки'),
+ n('show','Показать название, калории\nи разницу полной корзины'),
+ n('choose','Вариант выбран?','diamond'),n('cancel','Закрыть без изменений'),
+ n('version','Версия плана актуальна?','diamond'),n('conflict','Показать 409\nЗапросить свежий результат'),
+ n('write','Повторить проверку ограничений\nЗаменить одну позицию транзакцией'),
+ n('recalc','Пересчитать меню и корзины\nОтметить план черновиком'),
+ n('ui','Обновить блюда, сумму и бюджет\nбез перезагрузки страницы'),n('end','','doublecircle')
+],[e('start','open'),e('open','filter'),e('filter','exists'),e('exists','none','[нет]'),e('none','end'),e('exists','preview','[да]'),e('preview','show'),e('show','choose'),e('choose','cancel','[нет]'),e('cancel','end'),e('choose','version','[да]'),e('version','conflict','[нет]'),e('conflict','filter'),e('version','write','[да]'),e('write','recalc'),e('recalc','ui'),e('ui','end')]);
+graphs.activity_alternative.nodes.forEach(node=>{if(node.attributes.shape==='box')node.attributes.style='rounded';});
 graphs.activity_exception=base([n('start','','point'),n('request','Запросить обновление цен'),n('provider','Обратиться к PriceProvider'),n('ok','Источник ответил?','diamond'),n('update','Атомарно сохранить цены\nи дату набора'),n('keep','Оставить предыдущие цены\nОтветить 503 с кодом ошибки'),n('show','Показать сообщение и дату\nНе подставлять нулевые цены'),n('retry','Повторить запрос?','diamond'),n('end','','doublecircle')],[e('start','request'),e('request','provider'),e('provider','ok'),e('ok','update','[да]'),e('update','end'),e('ok','keep','[нет]'),e('keep','show'),e('show','retry'),e('retry','request','[да]'),e('retry','end','[нет]')]);
 const tables={
  users:'id TEXT PK\nemail TEXT UNIQUE\npassword_hash TEXT\ncreated_at TEXT',
  sessions:'token_hash TEXT PK\nuser_id TEXT FK\nexpires_at REAL',
  login_attempts:'email TEXT PK(1)\nattempted_at REAL PK(2)',
  profiles:'user_id TEXT PK FK\nsettings_json TEXT',
- plans:'id TEXT PK\nuser_id TEXT FK\nstart_date TEXT\ndays INTEGER\nsettings_json TEXT\ncreated_at TEXT',
+ plans:'id TEXT PK\nuser_id TEXT FK\nstart_date TEXT\ndays INTEGER\nsettings_json TEXT\ncreated_at TEXT\nstatus TEXT\nrevision INTEGER\nsaved_at TEXT',
  plan_items:'id TEXT PK\nplan_id TEXT FK\nday INTEGER\nslot INTEGER\nrecipe_id TEXT FK\nscale REAL\nUNIQUE(plan_id, day, slot)',
  recipes:'id TEXT PK\nname TEXT\nmeal TEXT\nminutes INTEGER\ningredients_json TEXT\nsteps_json TEXT',
  ingredients:'id TEXT PK\nname TEXT\ncategory TEXT\nunit TEXT\nkcal REAL\nprotein REAL\nfat REAL\ncarbs REAL\nallergens_json TEXT',
