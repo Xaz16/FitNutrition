@@ -1,0 +1,291 @@
+{
+  "directed": true,
+  "graphAttributes": {
+    "rankdir": "TB",
+    "bgcolor": "white",
+    "pad": 0.2,
+    "nodesep": 0.35,
+    "ranksep": 0.45,
+    "splines": "polyline"
+  },
+  "nodeAttributes": {
+    "fontname": "Times New Roman",
+    "fontsize": 13,
+    "margin": "0.15,0.12",
+    "style": "solid",
+    "color": "black"
+  },
+  "edgeAttributes": {
+    "fontname": "Times New Roman",
+    "fontsize": 11,
+    "arrowsize": 0.65
+  },
+  "nodes": [
+    {
+      "name": "start",
+      "attributes": {
+        "label": "",
+        "shape": "point"
+      }
+    },
+    {
+      "name": "form",
+      "attributes": {
+        "label": "Ввести имя, email и пароль",
+        "shape": "box",
+        "style": "rounded"
+      }
+    },
+    {
+      "name": "register",
+      "attributes": {
+        "label": "POST /api/auth/register\nПроверить ввод и уникальность email",
+        "shape": "box",
+        "style": "rounded"
+      }
+    },
+    {
+      "name": "valid",
+      "attributes": {
+        "label": "Регистрация успешна?",
+        "shape": "diamond"
+      }
+    },
+    {
+      "name": "error",
+      "attributes": {
+        "label": "Показать ошибки\nОстаться в форме",
+        "shape": "box",
+        "style": "rounded"
+      }
+    },
+    {
+      "name": "account",
+      "attributes": {
+        "label": "Создать User и Profile completed=false\nУстановить cookie сессии",
+        "shape": "box",
+        "style": "rounded"
+      }
+    },
+    {
+      "name": "basics",
+      "attributes": {
+        "label": "Шаг 1: пол, возраст, вес, рост\nДалее только при корректном вводе",
+        "shape": "box",
+        "style": "rounded"
+      }
+    },
+    {
+      "name": "goal",
+      "attributes": {
+        "label": "Шаг 2: активность и цель\nДалее только после выбора",
+        "shape": "box",
+        "style": "rounded"
+      }
+    },
+    {
+      "name": "limits",
+      "attributes": {
+        "label": "Шаг 3: ограничения и бюджет\nЗаполнение необязательно",
+        "shape": "box",
+        "style": "rounded"
+      }
+    },
+    {
+      "name": "summary",
+      "attributes": {
+        "label": "Шаг 4: сводка\nЧерновик сохраняется при возврате",
+        "shape": "box",
+        "style": "rounded"
+      }
+    },
+    {
+      "name": "edit",
+      "attributes": {
+        "label": "Нужно исправить?",
+        "shape": "diamond"
+      }
+    },
+    {
+      "name": "back",
+      "attributes": {
+        "label": "Открыть выбранный шаг\nСохранить остальной ввод",
+        "shape": "box",
+        "style": "rounded"
+      }
+    },
+    {
+      "name": "save",
+      "attributes": {
+        "label": "Нажать «Сохранить профиль»\nPUT /api/profile",
+        "shape": "box",
+        "style": "rounded"
+      }
+    },
+    {
+      "name": "saved",
+      "attributes": {
+        "label": "Профиль принят?",
+        "shape": "diamond"
+      }
+    },
+    {
+      "name": "invalid",
+      "attributes": {
+        "label": "Показать ошибки\nСохранить ввод",
+        "shape": "box",
+        "style": "rounded"
+      }
+    },
+    {
+      "name": "dashboard",
+      "attributes": {
+        "label": "Записать completed=true\nОткрыть дашборд",
+        "shape": "box",
+        "style": "rounded"
+      }
+    },
+    {
+      "name": "end",
+      "attributes": {
+        "label": "",
+        "shape": "doublecircle"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "tail": "start",
+      "head": "form",
+      "attributes": {
+        "label": ""
+      }
+    },
+    {
+      "tail": "form",
+      "head": "register",
+      "attributes": {
+        "label": ""
+      }
+    },
+    {
+      "tail": "register",
+      "head": "valid",
+      "attributes": {
+        "label": ""
+      }
+    },
+    {
+      "tail": "valid",
+      "head": "error",
+      "attributes": {
+        "label": "[нет]"
+      }
+    },
+    {
+      "tail": "error",
+      "head": "form",
+      "attributes": {
+        "label": ""
+      }
+    },
+    {
+      "tail": "valid",
+      "head": "account",
+      "attributes": {
+        "label": "[да]"
+      }
+    },
+    {
+      "tail": "account",
+      "head": "basics",
+      "attributes": {
+        "label": ""
+      }
+    },
+    {
+      "tail": "basics",
+      "head": "goal",
+      "attributes": {
+        "label": ""
+      }
+    },
+    {
+      "tail": "goal",
+      "head": "limits",
+      "attributes": {
+        "label": ""
+      }
+    },
+    {
+      "tail": "limits",
+      "head": "summary",
+      "attributes": {
+        "label": ""
+      }
+    },
+    {
+      "tail": "summary",
+      "head": "edit",
+      "attributes": {
+        "label": ""
+      }
+    },
+    {
+      "tail": "edit",
+      "head": "back",
+      "attributes": {
+        "label": "[да]"
+      }
+    },
+    {
+      "tail": "back",
+      "head": "summary",
+      "attributes": {
+        "label": "[после редактирования]"
+      }
+    },
+    {
+      "tail": "edit",
+      "head": "save",
+      "attributes": {
+        "label": "[нет]"
+      }
+    },
+    {
+      "tail": "save",
+      "head": "saved",
+      "attributes": {
+        "label": ""
+      }
+    },
+    {
+      "tail": "saved",
+      "head": "invalid",
+      "attributes": {
+        "label": "[нет]"
+      }
+    },
+    {
+      "tail": "invalid",
+      "head": "summary",
+      "attributes": {
+        "label": ""
+      }
+    },
+    {
+      "tail": "saved",
+      "head": "dashboard",
+      "attributes": {
+        "label": "[да]"
+      }
+    },
+    {
+      "tail": "dashboard",
+      "head": "end",
+      "attributes": {
+        "label": ""
+      }
+    }
+  ]
+}

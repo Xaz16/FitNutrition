@@ -1,0 +1,97 @@
+digraph {
+	graph [bb="0 0 554 1134",
+		bgcolor=white,
+		nodesep=0.35,
+		pad=0.2,
+		rankdir=TB,
+		ranksep=0.45,
+		splines=polyline
+	];
+	node [color=black,
+		fontname="Times New Roman",
+		fontsize=13,
+		label="\N",
+		margin="0.15,0.12",
+		style=solid
+	];
+	edge [arrowsize=0.65,
+		fontname="Times New Roman",
+		fontsize=11
+	];
+	start	[label="",
+		shape=point];
+	form	[label="Ввести имя, email и пароль",
+		shape=box,
+		style=rounded];
+	start -> form;
+	register	[label="POST /api/auth/register
+Проверить ввод и уникальность email",
+		shape=box,
+		style=rounded];
+	form -> register;
+	valid	[label="Регистрация успешна?",
+		shape=diamond];
+	register -> valid;
+	error	[label="Показать ошибки
+Остаться в форме",
+		shape=box,
+		style=rounded];
+	valid -> error	[label="[нет]"];
+	account	[label="Создать User и Profile completed=false
+Установить cookie сессии",
+		shape=box,
+		style=rounded];
+	valid -> account	[label="[да]"];
+	error -> form;
+	basics	[label="Шаг 1: пол, возраст, вес, рост
+Далее только при корректном вводе",
+		shape=box,
+		style=rounded];
+	account -> basics;
+	goal	[label="Шаг 2: активность и цель
+Далее только после выбора",
+		shape=box,
+		style=rounded];
+	basics -> goal;
+	limits	[label="Шаг 3: ограничения и бюджет
+Заполнение необязательно",
+		shape=box,
+		style=rounded];
+	goal -> limits;
+	summary	[label="Шаг 4: сводка
+Черновик сохраняется при возврате",
+		shape=box,
+		style=rounded];
+	limits -> summary;
+	edit	[label="Нужно исправить?",
+		shape=diamond];
+	summary -> edit;
+	back	[label="Открыть выбранный шаг
+Сохранить остальной ввод",
+		shape=box,
+		style=rounded];
+	edit -> back	[label="[да]"];
+	save	[label="Нажать «Сохранить профиль»
+PUT /api/profile",
+		shape=box,
+		style=rounded];
+	edit -> save	[label="[нет]"];
+	back -> summary	[label="[после редактирования]"];
+	saved	[label="Профиль принят?",
+		shape=diamond];
+	save -> saved;
+	invalid	[label="Показать ошибки
+Сохранить ввод",
+		shape=box,
+		style=rounded];
+	saved -> invalid	[label="[нет]"];
+	dashboard	[label="Записать completed=true
+Открыть дашборд",
+		shape=box,
+		style=rounded];
+	saved -> dashboard	[label="[да]"];
+	invalid -> summary;
+	end	[label="",
+		shape=doublecircle];
+	dashboard -> end;
+}

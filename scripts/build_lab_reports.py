@@ -16,6 +16,8 @@ OUT.mkdir(parents=True,exist_ok=True)
 FIGURES=[('structure','Структурная схема системы'),('usecase','Диаграмма вариантов использования'),('activity_main','Основной сценарий'),('activity_alternative','Альтернативный сценарий замены блюда'),('activity_exception','Сценарий ошибки источника цен'),('wireframes','Предварительные экранные формы'),('er','ER-модель прототипа')]
 FIGURES += [('entry_flow','Поток регистрации, профиля, дашборда и плана'),('onboarding_screens','Четыре экрана онбординга')]
 
+FIGURES += [('er_domain','Предметная ER-модель и соответствие SQLite'),('activity_registration','Регистрация и заполнение профиля'),('activity_generation','Генерация меню')]
+
 def clean(text):return re.sub(r'\*\*(.*?)\*\*',r'\1',text).replace('`','').replace('—','-')
 def setfont(p,size=14,bold=False):
  for r in p.runs:r.font.name='Times New Roman';r.font.size=Pt(size);r.font.bold=bold;r.font.color.rgb=RGBColor(0,0,0)
@@ -95,6 +97,7 @@ def parse(doc,text,adr=False,counters=None,compact=False):
   if line.startswith('```'):code=not code;continue
   if code:
    p=doc.add_paragraph(line);p.paragraph_format.line_spacing=1;p.paragraph_format.space_after=Pt(2)
+   p.paragraph_format.keep_with_next=i<len(lines) and not lines[i].strip().startswith('```')
    for r in p.runs:r.font.name='Consolas';r.font.size=Pt(9)
    continue
   if line.startswith('[[diagram:'):continue
@@ -112,7 +115,7 @@ def parse(doc,text,adr=False,counters=None,compact=False):
   if line.startswith('#'):
    level=len(line)-len(line.lstrip('#'));title=clean(line.lstrip('# '))
    if level==1 and not adr:continue
-   style='Heading 2' if (adr or compact) else 'Heading 1' if level<=2 else 'Heading 2'
+   style=('Heading 2' if level==1 else 'Heading 3') if adr else 'Heading 2' if compact else 'Heading 1' if level<=2 else 'Heading 2' if level==3 else 'Heading 3'
    p=doc.add_paragraph(title,style=style)
    if style=='Heading 1':p.paragraph_format.page_break_before=True
    if adr:
@@ -121,14 +124,15 @@ def parse(doc,text,adr=False,counters=None,compact=False):
     if level==1:p.paragraph_format.page_break_before=counters.get('adrs',0)>1
    continue
   p=paragraph(doc,line,small=bool(re.match(r'^\d+\. ',line) and 'http' in line))
+  if line.endswith('JSON-запрос:') or line.endswith('проекция:') or line.endswith('плана:') or line.endswith('снимка:') or line.endswith('записи:'):p.paragraph_format.keep_with_next=True
   if adr or compact:setfont(p,12);p.paragraph_format.line_spacing=1.2;p.paragraph_format.space_after=Pt(2)
 
 def append_figures(doc):
  for index,(name,title) in enumerate(FIGURES,1):
   sec=doc.add_section(WD_SECTION.NEW_PAGE);sec.different_first_page_header_footer=False
-  wide=name in ('usecase','wireframes','er','entry_flow','onboarding_screens')
+  wide=name in ('usecase','wireframes','er','entry_flow','onboarding_screens','er_domain')
   landscape=wide or name=='structure'
-  if name=='activity_alternative':sec.page_width=Cm(29.7);sec.page_height=Cm(42)
+  if name in ('activity_alternative','activity_registration','activity_generation'):sec.page_width=Cm(29.7);sec.page_height=Cm(42)
   elif wide:sec.page_width=Cm(42);sec.page_height=Cm(29.7)
   elif landscape:sec.page_width=Cm(29.7);sec.page_height=Cm(21)
   else:sec.page_width=Cm(21);sec.page_height=Cm(29.7)

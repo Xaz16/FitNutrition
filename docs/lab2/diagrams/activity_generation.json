@@ -1,0 +1,255 @@
+{
+  "directed": true,
+  "graphAttributes": {
+    "rankdir": "TB",
+    "bgcolor": "white",
+    "pad": 0.2,
+    "nodesep": 0.35,
+    "ranksep": 0.45,
+    "splines": "polyline"
+  },
+  "nodeAttributes": {
+    "fontname": "Times New Roman",
+    "fontsize": 13,
+    "margin": "0.15,0.12",
+    "style": "solid",
+    "color": "black"
+  },
+  "edgeAttributes": {
+    "fontname": "Times New Roman",
+    "fontsize": 11,
+    "arrowsize": 0.65
+  },
+  "nodes": [
+    {
+      "name": "start",
+      "attributes": {
+        "label": "",
+        "shape": "point"
+      }
+    },
+    {
+      "name": "input",
+      "attributes": {
+        "label": "Задать период, бюджет, предпочтения\nНажать «Составить меню»",
+        "shape": "box",
+        "style": "rounded"
+      }
+    },
+    {
+      "name": "request",
+      "attributes": {
+        "label": "POST /api/plan\nПроверить сессию и готовый профиль",
+        "shape": "box",
+        "style": "rounded"
+      }
+    },
+    {
+      "name": "valid",
+      "attributes": {
+        "label": "Ввод допустим?",
+        "shape": "diamond"
+      }
+    },
+    {
+      "name": "invalid",
+      "attributes": {
+        "label": "Показать 401 или 422\nПредыдущий план не менять",
+        "shape": "box",
+        "style": "rounded"
+      }
+    },
+    {
+      "name": "settings",
+      "attributes": {
+        "label": "Объединить профиль с параметрами\nРассчитать целевую энергию и БЖУ",
+        "shape": "box",
+        "style": "rounded"
+      }
+    },
+    {
+      "name": "filter",
+      "attributes": {
+        "label": "Для каждого дня и приёма\nучесть состав, время и повторы",
+        "shape": "box",
+        "style": "rounded"
+      }
+    },
+    {
+      "name": "complete",
+      "attributes": {
+        "label": "Все позиции подобраны?",
+        "shape": "diamond"
+      }
+    },
+    {
+      "name": "missing",
+      "attributes": {
+        "label": "Ответить 422\nСохранить прежний план",
+        "shape": "box",
+        "style": "rounded"
+      }
+    },
+    {
+      "name": "portions",
+      "attributes": {
+        "label": "Масштабировать порции\nпо энергетической доле приёма",
+        "shape": "box",
+        "style": "rounded"
+      }
+    },
+    {
+      "name": "write",
+      "attributes": {
+        "label": "Одной транзакцией записать\nPlan draft и все Meal",
+        "shape": "box",
+        "style": "rounded"
+      }
+    },
+    {
+      "name": "cart",
+      "attributes": {
+        "label": "Суммировать продукты, вычесть запасы\nРассчитать упаковки и полные корзины",
+        "shape": "box",
+        "style": "rounded"
+      }
+    },
+    {
+      "name": "response",
+      "attributes": {
+        "label": "HTTP 201: снимок состояния\nМеню, калории, цены и бюджет",
+        "shape": "box",
+        "style": "rounded"
+      }
+    },
+    {
+      "name": "result",
+      "attributes": {
+        "label": "Показать результат\nПревышение бюджета выделить красным",
+        "shape": "box",
+        "style": "rounded"
+      }
+    },
+    {
+      "name": "end",
+      "attributes": {
+        "label": "",
+        "shape": "doublecircle"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "tail": "start",
+      "head": "input",
+      "attributes": {
+        "label": ""
+      }
+    },
+    {
+      "tail": "input",
+      "head": "request",
+      "attributes": {
+        "label": ""
+      }
+    },
+    {
+      "tail": "request",
+      "head": "valid",
+      "attributes": {
+        "label": ""
+      }
+    },
+    {
+      "tail": "valid",
+      "head": "invalid",
+      "attributes": {
+        "label": "[нет]"
+      }
+    },
+    {
+      "tail": "invalid",
+      "head": "end",
+      "attributes": {
+        "label": ""
+      }
+    },
+    {
+      "tail": "valid",
+      "head": "settings",
+      "attributes": {
+        "label": "[да]"
+      }
+    },
+    {
+      "tail": "settings",
+      "head": "filter",
+      "attributes": {
+        "label": ""
+      }
+    },
+    {
+      "tail": "filter",
+      "head": "complete",
+      "attributes": {
+        "label": ""
+      }
+    },
+    {
+      "tail": "complete",
+      "head": "missing",
+      "attributes": {
+        "label": "[нет]"
+      }
+    },
+    {
+      "tail": "missing",
+      "head": "end",
+      "attributes": {
+        "label": ""
+      }
+    },
+    {
+      "tail": "complete",
+      "head": "portions",
+      "attributes": {
+        "label": "[да]"
+      }
+    },
+    {
+      "tail": "portions",
+      "head": "write",
+      "attributes": {
+        "label": ""
+      }
+    },
+    {
+      "tail": "write",
+      "head": "cart",
+      "attributes": {
+        "label": ""
+      }
+    },
+    {
+      "tail": "cart",
+      "head": "response",
+      "attributes": {
+        "label": ""
+      }
+    },
+    {
+      "tail": "response",
+      "head": "result",
+      "attributes": {
+        "label": ""
+      }
+    },
+    {
+      "tail": "result",
+      "head": "end",
+      "attributes": {
+        "label": ""
+      }
+    }
+  ]
+}
