@@ -1,0 +1,122 @@
+{
+  "directed": true,
+  "graphAttributes": {
+    "rankdir": "TB",
+    "bgcolor": "white",
+    "pad": 0.2,
+    "nodesep": 0.35,
+    "ranksep": 0.45,
+    "splines": "polyline"
+  },
+  "nodeAttributes": {
+    "fontname": "Times New Roman",
+    "fontsize": 12,
+    "margin": "0.15,0.12",
+    "style": "solid",
+    "color": "black"
+  },
+  "edgeAttributes": {
+    "fontname": "Times New Roman",
+    "fontsize": 11,
+    "arrowsize": 0.65
+  },
+  "nodes": [
+    {
+      "name": "user",
+      "attributes": {
+        "label": "Пользователь User / users\nid TEXT PK\nemail TEXT UNIQUE\npassword_hash TEXT\ncreated_at TEXT",
+        "shape": "box"
+      }
+    },
+    {
+      "name": "profile",
+      "attributes": {
+        "label": "Профиль Profile / profiles\nuser_id TEXT PK FK → users\nsettings_json TEXT\nпараметры, ограничения, completed",
+        "shape": "box"
+      }
+    },
+    {
+      "name": "plan",
+      "attributes": {
+        "label": "План Plan / plans\nid TEXT PK\nuser_id TEXT FK → users\nstart_date TEXT; days INTEGER\nsettings_json TEXT; created_at TEXT\nstatus TEXT; revision INTEGER\nsaved_at TEXT nullable",
+        "shape": "box"
+      }
+    },
+    {
+      "name": "meal",
+      "attributes": {
+        "label": "Приём пищи Meal / plan_items\nid TEXT PK\nplan_id TEXT FK → plans\nrecipe_id TEXT FK → recipes\nday INTEGER; slot INTEGER; scale REAL\nUNIQUE(plan_id, day, slot)",
+        "shape": "box"
+      }
+    },
+    {
+      "name": "dish",
+      "attributes": {
+        "label": "Блюдо Dish / recipes\nid TEXT PK; name TEXT\nmeal TEXT; minutes INTEGER\ningredients_json TEXT\nsteps_json TEXT",
+        "shape": "box"
+      }
+    },
+    {
+      "name": "ingredient",
+      "attributes": {
+        "label": "Ингредиент Ingredient / ingredients\nid TEXT PK; name TEXT\ncategory TEXT; unit TEXT\nkcal, protein, fat, carbs REAL\nallergens_json TEXT",
+        "shape": "box"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "tail": "user",
+      "head": "profile",
+      "attributes": {
+        "label": "",
+        "dir": "none",
+        "taillabel": "1",
+        "headlabel": "0..1",
+        "labeldistance": 2
+      }
+    },
+    {
+      "tail": "user",
+      "head": "plan",
+      "attributes": {
+        "label": "",
+        "dir": "none",
+        "taillabel": "1",
+        "headlabel": "0..N",
+        "labeldistance": 2
+      }
+    },
+    {
+      "tail": "plan",
+      "head": "meal",
+      "attributes": {
+        "label": "",
+        "dir": "none",
+        "taillabel": "1",
+        "headlabel": "0..N",
+        "labeldistance": 2
+      }
+    },
+    {
+      "tail": "dish",
+      "head": "meal",
+      "attributes": {
+        "label": "",
+        "dir": "none",
+        "taillabel": "1",
+        "headlabel": "0..N",
+        "labeldistance": 2
+      }
+    },
+    {
+      "tail": "dish",
+      "head": "ingredient",
+      "attributes": {
+        "label": "M:N состав\nколичество в ingredients_json\nлогическая связь без SQL FK",
+        "dir": "none",
+        "style": "dashed"
+      }
+    }
+  ]
+}

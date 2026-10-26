@@ -1,0 +1,83 @@
+digraph {
+	graph [bb="0 0 713 416",
+		bgcolor=white,
+		nodesep=0.35,
+		pad=0.2,
+		rankdir=TB,
+		ranksep=0.45,
+		splines=polyline
+	];
+	node [color=black,
+		fontname="Times New Roman",
+		fontsize=12,
+		label="\N",
+		margin="0.15,0.12",
+		style=solid
+	];
+	edge [arrowsize=0.65,
+		fontname="Times New Roman",
+		fontsize=11
+	];
+	user	[label="Пользователь User / users
+id TEXT PK
+email TEXT UNIQUE
+password_hash TEXT
+created_at TEXT",
+		shape=box];
+	profile	[label="Профиль Profile / profiles
+user_id TEXT PK FK → users
+settings_json TEXT
+параметры, ограничения, completed",
+		shape=box];
+	user -> profile	[dir=none,
+		headlabel="0..1",
+		labeldistance=2,
+		taillabel=1];
+	plan	[label="План Plan / plans
+id TEXT PK
+user_id TEXT FK → users
+start_date TEXT; days INTEGER
+settings_json TEXT; created_at TEXT
+status \
+TEXT; revision INTEGER
+saved_at TEXT nullable",
+		shape=box];
+	user -> plan	[dir=none,
+		headlabel="0..N",
+		labeldistance=2,
+		taillabel=1];
+	meal	[label="Приём пищи Meal / plan_items
+id TEXT PK
+plan_id TEXT FK → plans
+recipe_id TEXT FK → recipes
+day INTEGER; slot INTEGER; \
+scale REAL
+UNIQUE(plan_id, day, slot)",
+		shape=box];
+	plan -> meal	[dir=none,
+		headlabel="0..N",
+		labeldistance=2,
+		taillabel=1];
+	dish	[label="Блюдо Dish / recipes
+id TEXT PK; name TEXT
+meal TEXT; minutes INTEGER
+ingredients_json TEXT
+steps_json TEXT",
+		shape=box];
+	dish -> meal	[dir=none,
+		headlabel="0..N",
+		labeldistance=2,
+		taillabel=1];
+	ingredient	[label="Ингредиент Ingredient / ingredients
+id TEXT PK; name TEXT
+category TEXT; unit TEXT
+kcal, protein, fat, carbs REAL
+allergens_\
+json TEXT",
+		shape=box];
+	dish -> ingredient	[dir=none,
+		label="M:N состав
+количество в ingredients_json
+логическая связь без SQL FK",
+		style=dashed];
+}

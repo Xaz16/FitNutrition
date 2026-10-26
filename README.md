@@ -8,10 +8,11 @@
 ## Лабораторная работа 2
 
 - [Запуск и демонстрация прототипа](prototype/README.md).
-- [Архитектурный документ](docs/lab2/architecture.md), [шесть ADR](docs/lab2/adr), [протокол проверок](docs/lab2/test_results.md).
+- [Архитектурный документ](docs/lab2/architecture.md), [десять ADR](docs/lab2/adr), [протокол проверок](docs/lab2/test_results.md).
 - [Новый поток входа и профиль](docs/lab2/entry_flow.md), [постановка пользователя](docs/lab2/prompts/2026-10-26-entry-flow.md). Схемы: entry_flow.drawio / SVG, onboarding_screens.drawio / SVG.
 - [Результат и замена блюда](docs/lab2/replacement_logic.md): фильтры, предварительная разница полной корзины, сохранение и версии. Схема: activity_alternative.drawio / SVG.
-- [Диаграммы и исходники](docs/lab2/diagrams): структура, use case, три activity, ER, wireframe.
+- [Подробные JSON-контракты](docs/lab2/api_contracts.md): профиль, меню, альтернативы и замена.
+- [Диаграммы и исходники](docs/lab2/diagrams): структура, use case, пять activity, физическая и предметная ER, wireframe.
 - [Полный отчёт Word](output/lab2/Fit_Nutrition_Supply_LR2.docx) и [PDF](output/lab2/Fit_Nutrition_Supply_LR2.pdf).
 
 Windows: установите Python 3.10+, откройте PowerShell в `prototype` и выполните `powershell -ExecutionPolicy Bypass -File .\Start.ps1`. Адрес: http://127.0.0.1:8765. Сервис работает с SQLite; единственная внешняя зависимость приложения — bcrypt. Интернет нужен для её первой установки.

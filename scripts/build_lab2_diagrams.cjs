@@ -4,7 +4,7 @@ const modules=process.env.ARTIFACT_NODE_MODULES||path.resolve(__dirname,'../tool
 const {instance}=require(path.join(modules,'@viz-js/viz'));
 const sharp=require(path.join(modules,'sharp'));
 const out=path.resolve(__dirname,'../docs/lab2/diagrams');
-const x=s=>String(s).replace(/[<>&"]/g,c=>({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c]));
+const x=s=>String(s).replace(/[<>&"]/g,c=>({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c])).replace(/\n/g,'&#xa;');
 const n=(name,label,shape='box')=>({name,attributes:{label,shape}});
 const e=(tail,head,label='',extra={})=>({tail,head,attributes:{label,...extra}});
 const base=(nodes,edges,rankdir='TB')=>({directed:true,graphAttributes:{rankdir,bgcolor:'white',pad:.2,nodesep:.35,ranksep:.45,splines:'polyline'},nodeAttributes:{fontname:'Times New Roman',fontsize:13,margin:'0.15,0.12',style:'solid',color:'black'},edgeAttributes:{fontname:'Times New Roman',fontsize:11,arrowsize:.65},nodes,edges});
@@ -46,6 +46,52 @@ const tables={
 graphs.er=base(Object.entries(tables).map(([id,attrs])=>n(id,id.toUpperCase()+'\n────────────\n'+attrs)),[['users','sessions'],['users','plans'],['plans','plan_items'],['recipes','plan_items'],['stores','offers'],['ingredients','offers'],['users','pantry'],['ingredients','pantry'],['users','profiles']].map(([a,b])=>e(a,b,'',{dir:'none',taillabel:'1',headlabel:b==='profiles'?'0..1':'0..*',labeldistance:2})).concat([e('recipes','ingredients','ссылки id в JSON\nбез SQL FK',{style:'dashed',dir:'none'})]),'LR');
 graphs.er.nodeAttributes.fontsize=12;
 
+// Six domain entities mapped to physical tables. Dashed composition is JSON, not an SQL FK.
+graphs.er_domain=base([
+ n('user','Пользователь User / users\nid TEXT PK\nemail TEXT UNIQUE\npassword_hash TEXT\ncreated_at TEXT'),
+ n('profile','Профиль Profile / profiles\nuser_id TEXT PK FK → users\nsettings_json TEXT\nпараметры, ограничения, completed'),
+ n('plan','План Plan / plans\nid TEXT PK\nuser_id TEXT FK → users\nstart_date TEXT; days INTEGER\nsettings_json TEXT; created_at TEXT\nstatus TEXT; revision INTEGER\nsaved_at TEXT nullable'),
+ n('meal','Приём пищи Meal / plan_items\nid TEXT PK\nplan_id TEXT FK → plans\nrecipe_id TEXT FK → recipes\nday INTEGER; slot INTEGER; scale REAL\nUNIQUE(plan_id, day, slot)'),
+ n('dish','Блюдо Dish / recipes\nid TEXT PK; name TEXT\nmeal TEXT; minutes INTEGER\ningredients_json TEXT\nsteps_json TEXT'),
+ n('ingredient','Ингредиент Ingredient / ingredients\nid TEXT PK; name TEXT\ncategory TEXT; unit TEXT\nkcal, protein, fat, carbs REAL\nallergens_json TEXT')
+],[
+ e('user','profile','',{dir:'none',taillabel:'1',headlabel:'0..1',labeldistance:2}),
+ e('user','plan','',{dir:'none',taillabel:'1',headlabel:'0..N',labeldistance:2}),
+ e('plan','meal','',{dir:'none',taillabel:'1',headlabel:'0..N',labeldistance:2}),
+ e('dish','meal','',{dir:'none',taillabel:'1',headlabel:'0..N',labeldistance:2}),
+ e('dish','ingredient','M:N состав\nколичество в ingredients_json\nлогическая связь без SQL FK',{dir:'none',style:'dashed'})
+],'TB');
+graphs.er_domain.nodeAttributes.fontsize=12;
+
+graphs.activity_registration=base([
+ n('start','','point'),n('form','Ввести имя, email и пароль'),
+ n('register','POST /api/auth/register\nПроверить ввод и уникальность email'),
+ n('valid','Регистрация успешна?','diamond'),n('error','Показать ошибки\nОстаться в форме'),
+ n('account','Создать User и Profile completed=false\nУстановить cookie сессии'),
+ n('basics','Шаг 1: пол, возраст, вес, рост\nДалее только при корректном вводе'),
+ n('goal','Шаг 2: активность и цель\nДалее только после выбора'),
+ n('limits','Шаг 3: ограничения и бюджет\nЗаполнение необязательно'),
+ n('summary','Шаг 4: сводка\nЧерновик сохраняется при возврате'),
+ n('edit','Нужно исправить?','diamond'),n('back','Открыть выбранный шаг\nСохранить остальной ввод'),
+ n('save','Нажать «Сохранить профиль»\nPUT /api/profile'),n('saved','Профиль принят?','diamond'),
+ n('invalid','Показать ошибки\nСохранить ввод'),n('dashboard','Записать completed=true\nОткрыть дашборд'),n('end','','doublecircle')
+],[e('start','form'),e('form','register'),e('register','valid'),e('valid','error','[нет]'),e('error','form'),e('valid','account','[да]'),e('account','basics'),e('basics','goal'),e('goal','limits'),e('limits','summary'),e('summary','edit'),e('edit','back','[да]'),e('back','summary','[после редактирования]'),e('edit','save','[нет]'),e('save','saved'),e('saved','invalid','[нет]'),e('invalid','summary'),e('saved','dashboard','[да]'),e('dashboard','end')]);
+
+graphs.activity_generation=base([
+ n('start','','point'),n('input','Задать период, бюджет, предпочтения\nНажать «Составить меню»'),
+ n('request','POST /api/plan\nПроверить сессию и готовый профиль'),
+ n('valid','Ввод допустим?','diamond'),n('invalid','Показать 401 или 422\nПредыдущий план не менять'),
+ n('settings','Объединить профиль с параметрами\nРассчитать целевую энергию и БЖУ'),
+ n('filter','Для каждого дня и приёма\nучесть состав, время и повторы'),
+ n('complete','Все позиции подобраны?','diamond'),n('missing','Ответить 422\nСохранить прежний план'),
+ n('portions','Масштабировать порции\nпо энергетической доле приёма'),
+ n('write','Одной транзакцией записать\nPlan draft и все Meal'),
+ n('cart','Суммировать продукты, вычесть запасы\nРассчитать упаковки и полные корзины'),
+ n('response','HTTP 201: снимок состояния\nМеню, калории, цены и бюджет'),
+ n('result','Показать результат\nПревышение бюджета выделить красным'),n('end','','doublecircle')
+],[e('start','input'),e('input','request'),e('request','valid'),e('valid','invalid','[нет]'),e('invalid','end'),e('valid','settings','[да]'),e('settings','filter'),e('filter','complete'),e('complete','missing','[нет]'),e('missing','end'),e('complete','portions','[да]'),e('portions','write'),e('write','cart'),e('cart','response'),e('response','result'),e('result','end')]);
+for(const graph of [graphs.activity_registration,graphs.activity_generation])graph.nodes.forEach(node=>{if(node.attributes.shape==='box')node.attributes.style='rounded';});
+
 (async()=>{
  fs.mkdirSync(out,{recursive:true});const viz=await instance();
  for(const [name,graph] of Object.entries(graphs)){
@@ -60,7 +106,7 @@ graphs.er.nodeAttributes.fontsize=12;
   let xml=`<?xml version="1.0" encoding="UTF-8"?><mxfile host="app.diagrams.net"><diagram name="${name}"><mxGraphModel pageWidth="${Math.ceil(bb[2]+50)}" pageHeight="${Math.ceil(height+50)}"><root><mxCell id="0"/><mxCell id="1" parent="0"/>`;
   const objects=layout.objects||[];
   for(const o of objects){if(o.name?.startsWith('cluster_')&&o.bb){const [a,b,c,d]=o.bb.split(',').map(Number);xml+=`<mxCell id="cluster" value="Fit Nutrition Supply" style="rounded=0;fillColor=none;verticalAlign=top;align=left;spacing=8;" vertex="1" parent="1"><mxGeometry x="${a+20}" y="${height-d+20}" width="${c-a}" height="${d-b}" as="geometry"/></mxCell>`;}}
-  for(const o of objects){if(!o.pos)continue;const [cx,cy]=o.pos.split(',').map(Number),w=Number(o.width)*72,h=Number(o.height)*72;const shape=o.name==='actor'?'shape=umlActor;':o.shape==='ellipse'?'ellipse;':o.shape==='diamond'?'rhombus;':o.shape==='point'?'ellipse;fillColor=#000000;':o.shape==='doublecircle'?'shape=doubleEllipse;':'rounded=0;';xml+=`<mxCell id="n${o._gvid}" value="${x(o.label||'')}" style="${shape}whiteSpace=wrap;html=0;fontFamily=Times New Roman;fontSize=13;strokeColor=#000000;" vertex="1" parent="1"><mxGeometry x="${cx-w/2+20}" y="${height-cy-h/2+20}" width="${w}" height="${h}" as="geometry"/></mxCell>`;}
+  for(const o of objects){if(!o.pos)continue;const [cx,cy]=o.pos.split(',').map(Number),w=Number(o.width)*72,h=Number(o.height)*72;const shape=o.name==='actor'?'shape=umlActor;':o.shape==='ellipse'?'ellipse;':o.shape==='diamond'?'rhombus;':o.shape==='point'?'ellipse;fillColor=#000000;':o.shape==='doublecircle'?'shape=doubleEllipse;':`rounded=${String(o.style).includes('rounded')?1:0};`;xml+=`<mxCell id="n${o._gvid}" value="${x(o.label||'')}" style="${shape}whiteSpace=wrap;html=0;fontFamily=Times New Roman;fontSize=13;strokeColor=#000000;" vertex="1" parent="1"><mxGeometry x="${cx-w/2+20}" y="${height-cy-h/2+20}" width="${w}" height="${h}" as="geometry"/></mxCell>`;}
   for(const [i,ed] of (layout.edges||[]).entries()){const edgeLabel=ed.label||(ed.taillabel?`${ed.taillabel} : ${ed.headlabel}`:'');xml+=`<mxCell id="e${i}" value="${x(edgeLabel)}" source="n${ed.tail}" target="n${ed.head}" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;endArrow=${ed.arrowhead==='none'||ed.dir==='none'?'none':'open'};dashed=${ed.style==='dashed'?1:0};fontFamily=Times New Roman;fontSize=11;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>`;}
   if(name.startsWith('activity_')){
    const final=objects.find(o=>o.name==='end');
@@ -69,5 +115,5 @@ graphs.er.nodeAttributes.fontsize=12;
   xml+='</root></mxGraphModel></diagram></mxfile>';fs.writeFileSync(path.join(out,name+'.drawio'),xml);
  }
  await sharp(fs.readFileSync(path.join(out,'wireframes.svg')),{density:144}).png().toFile(path.join(out,'wireframes.png'));
- console.log('Generated structural, UML use case, 3 activity and ER diagrams in SVG, PNG, draw.io, DOT and JSON.');
+ console.log('Generated structure, use case, five activity and two ER diagrams in SVG, PNG, draw.io, DOT and JSON.');
 })().catch(e=>{console.error(e);process.exit(1)});

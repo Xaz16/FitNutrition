@@ -1,0 +1,89 @@
+digraph {
+	graph [bb="0 0 420 1131",
+		bgcolor=white,
+		nodesep=0.35,
+		pad=0.2,
+		rankdir=TB,
+		ranksep=0.45,
+		splines=polyline
+	];
+	node [color=black,
+		fontname="Times New Roman",
+		fontsize=13,
+		label="\N",
+		margin="0.15,0.12",
+		style=solid
+	];
+	edge [arrowsize=0.65,
+		fontname="Times New Roman",
+		fontsize=11
+	];
+	start	[label="",
+		shape=point];
+	input	[label="Задать период, бюджет, предпочтения
+Нажать «Составить меню»",
+		shape=box,
+		style=rounded];
+	start -> input;
+	request	[label="POST /api/plan
+Проверить сессию и готовый профиль",
+		shape=box,
+		style=rounded];
+	input -> request;
+	valid	[label="Ввод допустим?",
+		shape=diamond];
+	request -> valid;
+	invalid	[label="Показать 401 или 422
+Предыдущий план не менять",
+		shape=box,
+		style=rounded];
+	valid -> invalid	[label="[нет]"];
+	settings	[label="Объединить профиль с параметрами
+Рассчитать целевую энергию и БЖУ",
+		shape=box,
+		style=rounded];
+	valid -> settings	[label="[да]"];
+	end	[label="",
+		shape=doublecircle];
+	invalid -> end;
+	filter	[label="Для каждого дня и приёма
+учесть состав, время и повторы",
+		shape=box,
+		style=rounded];
+	settings -> filter;
+	complete	[label="Все позиции подобраны?",
+		shape=diamond];
+	filter -> complete;
+	missing	[label="Ответить 422
+Сохранить прежний план",
+		shape=box,
+		style=rounded];
+	complete -> missing	[label="[нет]"];
+	portions	[label="Масштабировать порции
+по энергетической доле приёма",
+		shape=box,
+		style=rounded];
+	complete -> portions	[label="[да]"];
+	missing -> end;
+	write	[label="Одной транзакцией записать
+Plan draft и все Meal",
+		shape=box,
+		style=rounded];
+	portions -> write;
+	cart	[label="Суммировать продукты, вычесть запасы
+Рассчитать упаковки и полные корзины",
+		shape=box,
+		style=rounded];
+	write -> cart;
+	response	[label="HTTP 201: снимок состояния
+Меню, калории, цены и бюджет",
+		shape=box,
+		style=rounded];
+	cart -> response;
+	result	[label="Показать результат
+Превышение бюджета выделить красным",
+		shape=box,
+		style=rounded];
+	response -> result;
+	result -> end;
+}
