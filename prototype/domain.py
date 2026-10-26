@@ -43,6 +43,10 @@ def nutrition(recipe,ingredients,scale=1):
  return {k:round(v,1) for k,v in out.items()}
 
 def allowed(recipe,settings,ingredients):
+ prefs=set(settings.get('preferences',[]))
+ if 'vegetarian' in prefs and set(recipe['ingredients'])&{'chicken','turkey','fish'}:return False
+ if 'no_fish' in prefs and 'fish' in recipe['ingredients']:return False
+ if 'no_milk' in prefs and any('молоко' in ingredients[i]['allergens'] for i in recipe['ingredients']):return False
  return (recipe['minutes']<=settings['minutes'] and not set(recipe['ingredients'])&set(settings['excluded'])
   and all(not set(ingredients[i]['allergens'])&set(settings['allergens']) for i in recipe['ingredients']))
 
