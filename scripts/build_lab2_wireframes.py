@@ -48,7 +48,7 @@ box(430,722,340,30,'Бюджет 3 000 ₽ · осталось 200 ₽','hint')
 box(430,768,340,36,'Состав корзины и целые упаковки →','button')
 box(815,465,370,360,'','panel')
 box(830,480,340,32,'Маршруты и состояния','title')
-box(830,530,340,230,'Основной: 1 → 2 → 4 → 5\nЗамена: 2 → 3 → 2, пересчёт 4 и 5\n\nДополнительно: вход / регистрация\nПустой каталог → сообщение\nНеверный ввод → ошибки полей\nСбой цен → предыдущие данные с датой\nНеполная корзина ≠ самая выгодная\n\nЧерновик UI, ожидает согласования\nЧисла на схемах — примеры','hint')
+box(830,530,340,230,'Основной: 1 → 2 → 4 → 5\nЗамена: 2 → 3 → 2, пересчёт 4 и 5\n\nДополнительно: вход / регистрация\nПустой каталог → сообщение\nНеверный ввод → ошибки полей\nСбой цен → предыдущие данные с датой\nНеполная корзина ≠ самая выгодная\n\nЭкраны согласованы 25.10.2026\nЧисла на схемах — примеры','hint')
 
 svg=[f'<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="{H}" viewBox="0 0 {W} {H}">', '<rect width="100%" height="100%" fill="white"/>', '<text x="15" y="32" font-family="Arial" font-size="22" font-weight="bold">Fit Nutrition Supply · Предварительные экранные формы</text>']
 root=ET.Element('mxfile',host='app.diagrams.net');diagram=ET.SubElement(root,'diagram',name='Wireframes');model=ET.SubElement(diagram,'mxGraphModel',pageWidth=str(W),pageHeight=str(H));mxroot=ET.SubElement(model,'root');ET.SubElement(mxroot,'mxCell',id='0');ET.SubElement(mxroot,'mxCell',id='1',parent='0')

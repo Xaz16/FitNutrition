@@ -1,0 +1,6 @@
+{
+  "name": "fitnutrition-documentation-tools",
+  "private": true,
+  "description": "Optional diagram generators; not required to run the app",
+  "dependencies": {"@viz-js/viz": "3.25.0", "sharp": "^0.34.0"}
+}

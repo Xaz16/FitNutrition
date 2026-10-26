@@ -1,0 +1,47 @@
+PRAGMA foreign_keys = ON;
+CREATE TABLE IF NOT EXISTS users (
+ id TEXT PRIMARY KEY, email TEXT UNIQUE NOT NULL, password_hash TEXT NOT NULL,
+ created_at TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS sessions (
+ token_hash TEXT PRIMARY KEY, user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+ expires_at REAL NOT NULL
+);
+CREATE TABLE IF NOT EXISTS login_attempts (
+ email TEXT NOT NULL, attempted_at REAL NOT NULL, PRIMARY KEY(email,attempted_at)
+);
+CREATE TABLE IF NOT EXISTS profiles (
+ user_id TEXT PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
+ settings_json TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS recipes (
+ id TEXT PRIMARY KEY, name TEXT NOT NULL, meal TEXT NOT NULL,
+ minutes INTEGER NOT NULL, ingredients_json TEXT NOT NULL, steps_json TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS ingredients (
+ id TEXT PRIMARY KEY, name TEXT NOT NULL, category TEXT NOT NULL, unit TEXT NOT NULL,
+ kcal REAL NOT NULL, protein REAL NOT NULL, fat REAL NOT NULL, carbs REAL NOT NULL,
+ allergens_json TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS stores (id TEXT PRIMARY KEY, name TEXT NOT NULL);
+CREATE TABLE IF NOT EXISTS offers (
+ id TEXT PRIMARY KEY, store_id TEXT NOT NULL REFERENCES stores(id),
+ ingredient_id TEXT NOT NULL REFERENCES ingredients(id), pack_size REAL NOT NULL,
+ price_kopecks INTEGER NOT NULL, available INTEGER NOT NULL, updated_at TEXT NOT NULL,
+ source TEXT NOT NULL, city TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS plans (
+ id TEXT PRIMARY KEY, user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+ start_date TEXT NOT NULL, days INTEGER NOT NULL, settings_json TEXT NOT NULL,
+ created_at TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS plan_items (
+ id TEXT PRIMARY KEY, plan_id TEXT NOT NULL REFERENCES plans(id) ON DELETE CASCADE,
+ day INTEGER NOT NULL, slot INTEGER NOT NULL, recipe_id TEXT NOT NULL REFERENCES recipes(id),
+ scale REAL NOT NULL, UNIQUE(plan_id, day, slot)
+);
+CREATE TABLE IF NOT EXISTS pantry (
+ user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+ ingredient_id TEXT NOT NULL REFERENCES ingredients(id), amount REAL NOT NULL DEFAULT 0,
+ purchased INTEGER NOT NULL DEFAULT 0, PRIMARY KEY(user_id, ingredient_id)
+);

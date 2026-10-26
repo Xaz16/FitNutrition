@@ -1,0 +1,64 @@
+digraph {
+	graph [bb="0 0 430 791",
+		bgcolor=white,
+		nodesep=0.35,
+		pad=0.2,
+		rankdir=TB,
+		ranksep=0.45,
+		splines=polyline
+	];
+	node [color=black,
+		fontname="Times New Roman",
+		fontsize=13,
+		label="\N",
+		margin="0.15,0.12",
+		style=solid
+	];
+	edge [arrowsize=0.65,
+		fontname="Times New Roman",
+		fontsize=11
+	];
+	start	[label="",
+		shape=point];
+	settings	[label="Ввести параметры, период,
+бюджет и исключения",
+		shape=box];
+	start -> settings;
+	validate	[label="Ввод корректен?",
+		shape=diamond];
+	settings -> validate;
+	error	[label="Показать ошибки полей",
+		shape=box];
+	validate -> error	[label="[нет]"];
+	build	[label="Подобрать блюда
+с учётом ограничений",
+		shape=box];
+	validate -> build	[label="[да]"];
+	error -> settings;
+	ready	[label="Меню полное?",
+		shape=diamond];
+	build -> ready;
+	missing	[label="Показать нехватку блюд
+Прежний план сохранить",
+		shape=box];
+	ready -> missing	[label="[нет]"];
+	save	[label="Сохранить план одной транзакцией",
+		shape=box];
+	ready -> save	[label="[да]"];
+	missing -> settings;
+	list	[label="Суммировать продукты
+и вычесть домашние запасы",
+		shape=box];
+	save -> list;
+	compare	[label="Рассчитать упаковки
+и сравнить полные корзины",
+		shape=box];
+	list -> compare;
+	show	[label="Показать магазин, сумму,
+дату цен и бюджет",
+		shape=box];
+	compare -> show;
+	end	[label="",
+		shape=doublecircle];
+	show -> end;
+}
