@@ -1,5 +1,5 @@
 digraph {
-	graph [bb="0 0 793 652",
+	graph [bb="0 0 793 680",
 		bgcolor=white,
 		nodesep=0.35,
 		pad=0.2,
@@ -52,7 +52,10 @@ start_date TEXT
 days INTEGER
 settings_json TEXT
 created_at \
-TEXT",
+TEXT
+status TEXT
+revision INTEGER
+saved_at TEXT",
 		shape=box];
 	users -> plans	[dir=none,
 		headlabel="0..*",

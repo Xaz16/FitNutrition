@@ -1,5 +1,5 @@
 digraph {
-	graph [bb="0 0 457 755",
+	graph [bb="0 0 653 1057",
 		bgcolor=white,
 		nodesep=0.35,
 		pad=0.2,
@@ -20,39 +20,69 @@ digraph {
 	];
 	start	[label="",
 		shape=point];
-	open	[label="Открыть блюдо и запросить замены",
-		shape=box];
+	open	[label="Нажать «Заменить» у блюда",
+		shape=box,
+		style=rounded];
 	start -> open;
-	filter	[label="Проверить состав, время,
-тип приёма и лимит повторов",
-		shape=box];
+	filter	[label="Отфильтровать: тип приёма, аллергии,
+предпочтения, время, повторы,
+калории \
+в пределах ±15%",
+		shape=box,
+		style=rounded];
 	open -> filter;
 	exists	[label="Есть варианты?",
 		shape=diamond];
 	filter -> exists;
-	none	[label="Сообщить об отсутствии вариантов
-Блюдо оставить",
-		shape=box];
+	none	[label="Показать отсутствие альтернатив
+План не изменять",
+		shape=box,
+		style=rounded];
 	exists -> none	[label="[нет]"];
-	choose	[label="Выбрать альтернативу",
-		shape=box];
-	exists -> choose	[label="[да]"];
+	preview	[label="Для каждого варианта пересчитать
+список, запасы и целые упаковки",
+		shape=box,
+		style=rounded];
+	exists -> preview	[label="[да]"];
 	end	[label="",
 		shape=doublecircle];
 	none -> end;
-	confirm	[label="Замена подтверждена?",
+	show	[label="Показать название, калории
+и разницу полной корзины",
+		shape=box,
+		style=rounded];
+	preview -> show;
+	choose	[label="Вариант выбран?",
 		shape=diamond];
-	choose -> confirm;
-	cancel	[label="Закрыть без изменения плана",
-		shape=box];
-	confirm -> cancel	[label="[нет]"];
-	update	[label="Проверить владельца и ограничения
-Сохранить новую позицию",
-		shape=box];
-	confirm -> update	[label="[да]"];
+	show -> choose;
+	cancel	[label="Закрыть без изменений",
+		shape=box,
+		style=rounded];
+	choose -> cancel	[label="[нет]"];
+	version	[label="Версия плана актуальна?",
+		shape=diamond];
+	choose -> version	[label="[да]"];
 	cancel -> end;
-	recalc	[label="Пересчитать день, список и корзины",
-		shape=box];
-	update -> recalc;
-	recalc -> end;
+	conflict	[label="Показать 409
+Запросить свежий результат",
+		shape=box,
+		style=rounded];
+	version -> conflict	[label="[нет]"];
+	write	[label="Повторить проверку ограничений
+Заменить одну позицию транзакцией",
+		shape=box,
+		style=rounded];
+	version -> write	[label="[да]"];
+	conflict -> filter;
+	recalc	[label="Пересчитать меню и корзины
+Отметить план черновиком",
+		shape=box,
+		style=rounded];
+	write -> recalc;
+	ui	[label="Обновить блюда, сумму и бюджет
+без перезагрузки страницы",
+		shape=box,
+		style=rounded];
+	recalc -> ui;
+	ui -> end;
 }

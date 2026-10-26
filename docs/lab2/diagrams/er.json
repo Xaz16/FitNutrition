@@ -52,7 +52,7 @@
     {
       "name": "plans",
       "attributes": {
-        "label": "PLANS\n────────────\nid TEXT PK\nuser_id TEXT FK\nstart_date TEXT\ndays INTEGER\nsettings_json TEXT\ncreated_at TEXT",
+        "label": "PLANS\n────────────\nid TEXT PK\nuser_id TEXT FK\nstart_date TEXT\ndays INTEGER\nsettings_json TEXT\ncreated_at TEXT\nstatus TEXT\nrevision INTEGER\nsaved_at TEXT",
         "shape": "box"
       }
     },

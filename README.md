@@ -10,6 +10,7 @@
 - [Запуск и демонстрация прототипа](prototype/README.md).
 - [Архитектурный документ](docs/lab2/architecture.md), [шесть ADR](docs/lab2/adr), [протокол проверок](docs/lab2/test_results.md).
 - [Новый поток входа и профиль](docs/lab2/entry_flow.md), [постановка пользователя](docs/lab2/prompts/2026-10-26-entry-flow.md). Схемы: entry_flow.drawio / SVG, onboarding_screens.drawio / SVG.
+- [Результат и замена блюда](docs/lab2/replacement_logic.md): фильтры, предварительная разница полной корзины, сохранение и версии. Схема: activity_alternative.drawio / SVG.
 - [Диаграммы и исходники](docs/lab2/diagrams): структура, use case, три activity, ER, wireframe.
 - [Полный отчёт Word](output/lab2/Fit_Nutrition_Supply_LR2.docx) и [PDF](output/lab2/Fit_Nutrition_Supply_LR2.pdf).
 
@@ -28,7 +29,7 @@ Windows: установите Python 3.10+, откройте PowerShell в `prot
 
 ## Воспроизводимость
 
-Тесты: `prototype\.venv\Scripts\python.exe -m unittest discover -s prototype/tests -v` из корня репозитория. Пройдены 20 тестов; исходный браузерный сценарий на 360/768/1920 и новый онбординг на 360/768/1440. Шесть состояний нового потока дают 18 сочетаний без горизонтальной прокрутки. Firefox и Safari ещё не проверены.
+Тесты: `prototype\.venv\Scripts\python.exe -m unittest discover -s prototype/tests -v` из корня репозитория. Пройдены 24 теста; браузерные проверки основного пути, онбординга и результата с заменой. Предварительная разница цены проверена против фактической корзины. Firefox и Safari ещё не проверены.
 
 Схемы можно редактировать в draw.io без генератора. Для генерации Graphviz-схем: установить Node.js и зависимости из `tools/package.json`, выполнить `node scripts/build_lab2_diagrams.cjs`. Для wireframe: `python scripts/build_lab2_wireframes.py`. Для сборки Word нужны python-docx и Pillow, затем `python scripts/build_lab_reports.py`; сохранённый шаблон титульника используется при наличии, иначе создаётся резервный титульник. PDF получают экспортом Word/LibreOffice; основной текст A4, крупные схемы — A3.
 

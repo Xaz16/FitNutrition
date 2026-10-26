@@ -31,15 +31,17 @@
     {
       "name": "open",
       "attributes": {
-        "label": "Открыть блюдо и запросить замены",
-        "shape": "box"
+        "label": "Нажать «Заменить» у блюда",
+        "shape": "box",
+        "style": "rounded"
       }
     },
     {
       "name": "filter",
       "attributes": {
-        "label": "Проверить состав, время,\nтип приёма и лимит повторов",
-        "shape": "box"
+        "label": "Отфильтровать: тип приёма, аллергии,\nпредпочтения, время, повторы,\nкалории в пределах ±15%",
+        "shape": "box",
+        "style": "rounded"
       }
     },
     {
@@ -52,43 +54,79 @@
     {
       "name": "none",
       "attributes": {
-        "label": "Сообщить об отсутствии вариантов\nБлюдо оставить",
-        "shape": "box"
+        "label": "Показать отсутствие альтернатив\nПлан не изменять",
+        "shape": "box",
+        "style": "rounded"
+      }
+    },
+    {
+      "name": "preview",
+      "attributes": {
+        "label": "Для каждого варианта пересчитать\nсписок, запасы и целые упаковки",
+        "shape": "box",
+        "style": "rounded"
+      }
+    },
+    {
+      "name": "show",
+      "attributes": {
+        "label": "Показать название, калории\nи разницу полной корзины",
+        "shape": "box",
+        "style": "rounded"
       }
     },
     {
       "name": "choose",
       "attributes": {
-        "label": "Выбрать альтернативу",
-        "shape": "box"
-      }
-    },
-    {
-      "name": "confirm",
-      "attributes": {
-        "label": "Замена подтверждена?",
+        "label": "Вариант выбран?",
         "shape": "diamond"
       }
     },
     {
       "name": "cancel",
       "attributes": {
-        "label": "Закрыть без изменения плана",
-        "shape": "box"
+        "label": "Закрыть без изменений",
+        "shape": "box",
+        "style": "rounded"
       }
     },
     {
-      "name": "update",
+      "name": "version",
       "attributes": {
-        "label": "Проверить владельца и ограничения\nСохранить новую позицию",
-        "shape": "box"
+        "label": "Версия плана актуальна?",
+        "shape": "diamond"
+      }
+    },
+    {
+      "name": "conflict",
+      "attributes": {
+        "label": "Показать 409\nЗапросить свежий результат",
+        "shape": "box",
+        "style": "rounded"
+      }
+    },
+    {
+      "name": "write",
+      "attributes": {
+        "label": "Повторить проверку ограничений\nЗаменить одну позицию транзакцией",
+        "shape": "box",
+        "style": "rounded"
       }
     },
     {
       "name": "recalc",
       "attributes": {
-        "label": "Пересчитать день, список и корзины",
-        "shape": "box"
+        "label": "Пересчитать меню и корзины\nОтметить план черновиком",
+        "shape": "box",
+        "style": "rounded"
+      }
+    },
+    {
+      "name": "ui",
+      "attributes": {
+        "label": "Обновить блюда, сумму и бюджет\nбез перезагрузки страницы",
+        "shape": "box",
+        "style": "rounded"
       }
     },
     {
@@ -137,20 +175,27 @@
     },
     {
       "tail": "exists",
-      "head": "choose",
+      "head": "preview",
       "attributes": {
         "label": "[да]"
       }
     },
     {
-      "tail": "choose",
-      "head": "confirm",
+      "tail": "preview",
+      "head": "show",
       "attributes": {
         "label": ""
       }
     },
     {
-      "tail": "confirm",
+      "tail": "show",
+      "head": "choose",
+      "attributes": {
+        "label": ""
+      }
+    },
+    {
+      "tail": "choose",
       "head": "cancel",
       "attributes": {
         "label": "[нет]"
@@ -164,14 +209,35 @@
       }
     },
     {
-      "tail": "confirm",
-      "head": "update",
+      "tail": "choose",
+      "head": "version",
       "attributes": {
         "label": "[да]"
       }
     },
     {
-      "tail": "update",
+      "tail": "version",
+      "head": "conflict",
+      "attributes": {
+        "label": "[нет]"
+      }
+    },
+    {
+      "tail": "conflict",
+      "head": "filter",
+      "attributes": {
+        "label": ""
+      }
+    },
+    {
+      "tail": "version",
+      "head": "write",
+      "attributes": {
+        "label": "[да]"
+      }
+    },
+    {
+      "tail": "write",
       "head": "recalc",
       "attributes": {
         "label": ""
@@ -179,6 +245,13 @@
     },
     {
       "tail": "recalc",
+      "head": "ui",
+      "attributes": {
+        "label": ""
+      }
+    },
+    {
+      "tail": "ui",
       "head": "end",
       "attributes": {
         "label": ""
