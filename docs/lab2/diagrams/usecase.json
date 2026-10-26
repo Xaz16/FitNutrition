@@ -18,7 +18,8 @@
   "edgeAttributes": {
     "fontname": "Times New Roman",
     "fontsize": 11,
-    "arrowsize": 0.65
+    "arrowsize": 0.65,
+    "arrowhead": "open"
   },
   "nodes": [
     {
