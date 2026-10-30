@@ -1,5 +1,5 @@
 digraph {
-	graph [bb="0 0 793 680",
+	graph [bb="0 0 863 788",
 		bgcolor=white,
 		nodesep=0.35,
 		pad=0.2,
@@ -44,6 +44,17 @@ settings_json TEXT",
 		headlabel="0..1",
 		labeldistance=2,
 		taillabel=1];
+	family_profiles	[label="FAMILY_PROFILES
+────────────
+id TEXT PK
+user_id TEXT FK
+settings_json TEXT
+created_at TEXT",
+		shape=box];
+	users -> family_profiles	[dir=none,
+		headlabel="0..*",
+		labeldistance=2,
+		taillabel=1];
 	plans	[label="PLANS
 ────────────
 id TEXT PK
@@ -77,6 +88,10 @@ purchased INTEGER",
 email TEXT PK(1)
 attempted_at REAL PK(2)",
 		shape=box];
+	plans -> family_profiles	[dir=none,
+		label="member_ids / participants в JSON
+без SQL FK",
+		style=dashed];
 	plan_items	[label="PLAN_ITEMS
 ────────────
 id TEXT PK

@@ -31,7 +31,7 @@
     {
       "name": "onboarding",
       "attributes": {
-        "label": "flow.js\nОнбординг, черновик localStorage\nПрофиль, дашборд и настройки плана",
+        "label": "flow.js / profile.js / family.js\nОбщий каркас, профиль и онбординг\nУчастники и настройки плана",
         "shape": "box"
       }
     },
@@ -52,7 +52,7 @@
     {
       "name": "profile",
       "attributes": {
-        "label": "profiles.py\nvalidate_profile, plan_settings\nГотовность и отпечаток профиля",
+        "label": "profiles.py / family.py\nДата рождения, профиль и участники\nИндивидуальные нормы, общий план",
         "shape": "box"
       }
     },
@@ -189,6 +189,13 @@
       "head": "db",
       "attributes": {
         "label": "параметризованный SQL"
+      }
+    },
+    {
+      "tail": "profile",
+      "head": "db",
+      "attributes": {
+        "label": "family.py: чтение профилей семьи"
       }
     }
   ]
