@@ -10,8 +10,24 @@ const e=(tail,head,label='',extra={})=>({tail,head,attributes:{label,...extra}})
 const base=(nodes,edges,rankdir='TB')=>({directed:true,graphAttributes:{rankdir,bgcolor:'white',pad:.2,nodesep:.35,ranksep:.45,splines:'polyline'},nodeAttributes:{fontname:'Times New Roman',fontsize:13,margin:'0.15,0.12',style:'solid',color:'black'},edgeAttributes:{fontname:'Times New Roman',fontsize:11,arrowsize:.65},nodes,edges});
 const graphs={};
 graphs.structure=base([
- n('ui','Браузерный интерфейс\nHTML / CSS / JavaScript'),n('http','HTTP API\nМаршруты, JSON, ошибки, сессия'),n('auth','AuthService\nРегистрация, вход, bcrypt'),n('domain','Прикладные функции domain.py\nНормы → меню → список → корзины'),n('provider','DemoPriceProvider\nУчебные предложения\nБудущий внешний адаптер'),n('repo','Repository / server.py\nSQL, владение данными, транзакции'),n('db','SQLite\nУчётные записи, планы, каталог, цены','cylinder')
-],[e('ui','http','HTTP / JSON'),e('http','auth'),e('http','domain'),e('http','repo'),e('provider','repo','fixtures / offers'),e('domain','repo','данные через API-обработчик',{dir:'both'}),e('auth','repo'),e('repo','db','SQL + параметры')]);
+ n('ui','Браузер: index.html / app.js / style.css\nВход, навигация, каталог и закупки'),
+ n('onboarding','flow.js\nОнбординг, черновик localStorage\nПрофиль, дашборд и настройки плана'),
+ n('result','result.js\nРезультат меню, окно альтернатив\nПрогноз цены и выбор замены'),
+ n('http','server.py / Handler\nHTTP / JSON, сессия, маршруты\nОркестрация расчётов и сохранения'),
+ n('profile','profiles.py\nvalidate_profile, plan_settings\nГотовность и отпечаток профиля'),
+ n('replacement','replacements.py\nreplacement_candidates\npreview_replacements, meal_cost'),
+ n('domain','domain.py\nНормы, подбор меню, allowed\nСписок и расчёт полных корзин'),
+ n('provider','prices.py / DemoPriceProvider\nУчебные предложения\nЧтение и обновление offers'),
+ n('storage','server.py / SQLite\nРегистрация, bcrypt и cookie-сессии\nПрофили, планы, SQL и транзакции'),
+ n('db','SQLite / schema.sql\nusers, sessions, profiles, plans, plan_items\nrecipes, ingredients, offers, pantry','cylinder')
+],[e('ui','onboarding','формы'),e('ui','result','результат'),e('ui','http','остальные API'),
+ e('onboarding','http','PUT /profile; POST /plan'),
+ e('result','http','GET /alternatives; POST /replace; /plan/save'),
+ e('http','profile','валидация профиля'),e('http','replacement','кандидаты и прогноз'),
+ e('profile','domain','validate_settings'),e('replacement','domain','фильтр, КБЖУ, корзины'),
+ e('http','domain','генерация и снимок'),e('http','provider','цены'),
+ e('http','storage','данные, владение, revision'),e('provider','db','чтение / запись offers'),
+ e('storage','db','параметризованный SQL')]);
 graphs.usecase=base([n('actor','Пользователь\n(взрослый)','plaintext'),n('login','Зарегистрироваться / войти','ellipse'),n('prefs','Задать параметры,\nбюджет и исключения','ellipse'),n('plan','Составить меню','ellipse'),n('replace','Заменить блюдо','ellipse'),n('recipe','Просмотреть рецепт','ellipse'),n('list','Получить список покупок','ellipse'),n('stock','Учесть домашние запасы','ellipse'),n('basket','Сравнить полные корзины','ellipse'),n('packs','Рассчитать целые упаковки','ellipse')],[...['login','prefs','plan','replace','recipe','list','stock','basket'].map(id=>e('actor',id,'',{arrowhead:'none'})),e('plan','list','«include»',{style:'dashed'}),e('basket','packs','«include»',{style:'dashed'}),e('replace','list','«include»',{style:'dashed'})],'LR');
  graphs.usecase.subgraphs=[{name:'cluster_system',graphAttributes:{label:'Fit Nutrition Supply',fontname:'Times New Roman',fontsize:15},nodes:graphs.usecase.nodes.filter(v=>v.name!=='actor')}];graphs.usecase.nodes=graphs.usecase.nodes.filter(v=>v.name==='actor');
 graphs.usecase.edgeAttributes.arrowhead='open';
