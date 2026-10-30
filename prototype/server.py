@@ -18,7 +18,7 @@ import bcrypt
 from catalog import seed, ALLERGENS
 from domain import DomainError, validate_settings, nutrition, allowed, generate_plan, shopping, calculate_baskets
 from prices import DemoPriceProvider,PriceSourceUnavailable
-from profiles import validate_profile,plan_settings,profile_fingerprint
+from profiles import validate_profile,plan_settings,profile_fingerprint,current_profile
 from replacements import meal_cost,preview_replacements,replacement_candidates
 
 ROOT=Path(__file__).resolve().parent
@@ -59,7 +59,7 @@ def snapshot(db,user):
  ingredients,recipes=catalog(db)
  profile=db.execute('SELECT settings_json FROM profiles WHERE user_id=?',(user,)).fetchone()
  plan=db.execute('SELECT * FROM plans WHERE user_id=? ORDER BY created_at DESC,id DESC LIMIT 1',(user,)).fetchone()
- saved=json.loads(profile[0]) if profile else None
+ saved=current_profile(json.loads(profile[0])) if profile else None
  result={'profile':saved,'profile_complete':bool(saved and saved.get('completed')),'ingredients':list(ingredients.values()),'recipes':list(recipes.values()),'allergens':ALLERGENS,'plan':None,'test_data':True}
  if not plan or not result['profile_complete']:return result
  settings=json.loads(plan['settings_json'])
@@ -116,12 +116,13 @@ class Handler(BaseHTTPRequestHandler):
  def do_GET(self):self.handle_request('GET')
  def do_POST(self):self.handle_request('POST')
  def do_PUT(self):self.handle_request('PUT')
+ def do_PATCH(self):self.handle_request('PATCH')
  def handle_request(self,method):
   path=urlparse(self.path).path
   try:
    if not path.startswith('/api/'):
     if method!='GET':return self.send_json({'error':'Метод не поддерживается'},405)
-    filename={'/':'index.html','/index.html':'index.html','/app.js':'app.js','/flow.js':'flow.js','/result.js':'result.js','/style.css':'style.css'}.get(path)
+    filename={'/':'index.html','/index.html':'index.html','/app.js':'app.js','/flow.js':'flow.js','/profile.js':'profile.js','/result.js':'result.js','/style.css':'style.css'}.get(path)
     if not filename:return self.send_json({'error':'Не найдено'},404)
     body=(ROOT/'static'/filename).read_bytes()
     self.send_response(200);self.send_header('Content-Type',{'html':'text/html; charset=utf-8','js':'text/javascript; charset=utf-8','css':'text/css; charset=utf-8'}[filename.rsplit('.',1)[-1]])
@@ -167,8 +168,14 @@ class Handler(BaseHTTPRequestHandler):
     user=self.require_user(db)
     if path=='/api/state' and method=='GET':
      db.execute('BEGIN');return self.send_json(snapshot(db,user))
-    if path=='/api/profile' and method=='PUT':
+    if path=='/api/profile' and method in ('PUT','PATCH'):
      data=self.read_json();previous=db.execute('SELECT settings_json FROM profiles WHERE user_id=?',(user,)).fetchone()
+     if method=='PATCH':
+      allowed_fields={'name','sex','birth_date','weight','height','activity','goal','allergens','preferences','other_allergies','budget_week'}
+      if len(data)!=1 or not set(data)<=allowed_fields:raise DomainError('Изменяйте одно поле профиля за раз')
+      if not previous or not json.loads(previous[0]).get('completed'):raise DomainError('Сначала заполните профиль')
+      if 'birth_date' in data and not data['birth_date']:raise DomainError('Укажите дату рождения',{'birth_date':'Обязательное поле'})
+      data={**json.loads(previous[0]),**data}
      if 'name' not in data:data['name']=json.loads(previous[0]).get('name','Пользователь') if previous else 'Пользователь'
      saved=validate_profile(data)
      db.execute('INSERT INTO profiles VALUES (?,?) ON CONFLICT(user_id) DO UPDATE SET settings_json=excluded.settings_json',(user,json.dumps(saved,ensure_ascii=False)))
