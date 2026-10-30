@@ -1,0 +1,110 @@
+{
+  "browser": "156.0.8078.79",
+  "date": "2026-10-30T12:23:56.200Z",
+  "checks": [
+    "registration name",
+    "onboarding guard",
+    "required steps",
+    "back retains values",
+    "reload retains draft",
+    "optional step skipped",
+    "summary editing",
+    "dashboard redirect",
+    "inline baskets",
+    "profile independent from plan",
+    "stale plan retained safely"
+  ],
+  "layouts": [
+    {
+      "screen": "step1",
+      "width": 360,
+      "overflow": false
+    },
+    {
+      "screen": "step1",
+      "width": 768,
+      "overflow": false
+    },
+    {
+      "screen": "step1",
+      "width": 1440,
+      "overflow": false
+    },
+    {
+      "screen": "step2",
+      "width": 360,
+      "overflow": false
+    },
+    {
+      "screen": "step2",
+      "width": 768,
+      "overflow": false
+    },
+    {
+      "screen": "step2",
+      "width": 1440,
+      "overflow": false
+    },
+    {
+      "screen": "step3",
+      "width": 360,
+      "overflow": false
+    },
+    {
+      "screen": "step3",
+      "width": 768,
+      "overflow": false
+    },
+    {
+      "screen": "step3",
+      "width": 1440,
+      "overflow": false
+    },
+    {
+      "screen": "step4",
+      "width": 360,
+      "overflow": false
+    },
+    {
+      "screen": "step4",
+      "width": 768,
+      "overflow": false
+    },
+    {
+      "screen": "step4",
+      "width": 1440,
+      "overflow": false
+    },
+    {
+      "screen": "dashboard",
+      "width": 360,
+      "overflow": false
+    },
+    {
+      "screen": "dashboard",
+      "width": 768,
+      "overflow": false
+    },
+    {
+      "screen": "dashboard",
+      "width": 1440,
+      "overflow": false
+    },
+    {
+      "screen": "plan",
+      "width": 360,
+      "overflow": false
+    },
+    {
+      "screen": "plan",
+      "width": 768,
+      "overflow": false
+    },
+    {
+      "screen": "plan",
+      "width": 1440,
+      "overflow": false
+    }
+  ],
+  "consoleErrors": []
+}

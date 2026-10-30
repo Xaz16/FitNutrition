@@ -59,3 +59,5 @@ function editProfileField(key){
   catch(error){document.querySelector('#profile-field-error').textContent=error.fields?.[key]||error.message;button.disabled=false;}
  };
 }
+
+function friendlyEmptyMarkup(){return `<section class="panel empty friendly-empty"><div class="friendly-icon">${foodIcon}</div><h2>У вас пока нет плана</h2><p>${state.previous_plan_requires_update?'Параметры изменились. Давайте составим меню заново с учётом вашего профиля.':'Несколько простых настроек, и здесь появятся меню и список покупок.'}</p><button id="result-settings" data-page="settings">Составить мой первый план</button></section>`;}

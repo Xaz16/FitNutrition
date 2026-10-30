@@ -1,0 +1,170 @@
+digraph {
+	graph [bb="0 0 863 788",
+		bgcolor=white,
+		nodesep=0.35,
+		pad=0.2,
+		rankdir=LR,
+		ranksep=0.45,
+		splines=polyline
+	];
+	node [color=black,
+		fontname="Times New Roman",
+		fontsize=12,
+		label="\N",
+		margin="0.15,0.12",
+		style=solid
+	];
+	edge [arrowsize=0.65,
+		fontname="Times New Roman",
+		fontsize=11
+	];
+	users	[label="USERS
+────────────
+id TEXT PK
+email TEXT UNIQUE
+password_hash TEXT
+created_at TEXT",
+		shape=box];
+	sessions	[label="SESSIONS
+────────────
+token_hash TEXT PK
+user_id TEXT FK
+expires_at REAL",
+		shape=box];
+	users -> sessions	[dir=none,
+		headlabel="0..*",
+		labeldistance=2,
+		taillabel=1];
+	profiles	[label="PROFILES
+────────────
+user_id TEXT PK FK
+settings_json TEXT",
+		shape=box];
+	users -> profiles	[dir=none,
+		headlabel="0..1",
+		labeldistance=2,
+		taillabel=1];
+	family_profiles	[label="FAMILY_PROFILES
+────────────
+id TEXT PK
+user_id TEXT FK
+settings_json TEXT
+created_at TEXT",
+		shape=box];
+	users -> family_profiles	[dir=none,
+		headlabel="0..*",
+		labeldistance=2,
+		taillabel=1];
+	plans	[label="PLANS
+────────────
+id TEXT PK
+user_id TEXT FK
+start_date TEXT
+days INTEGER
+settings_json TEXT
+created_at \
+TEXT
+status TEXT
+revision INTEGER
+saved_at TEXT",
+		shape=box];
+	users -> plans	[dir=none,
+		headlabel="0..*",
+		labeldistance=2,
+		taillabel=1];
+	pantry	[label="PANTRY
+────────────
+user_id TEXT PK(1) FK
+ingredient_id TEXT PK(2) FK
+amount REAL
+purchased INTEGER",
+		shape=box];
+	users -> pantry	[dir=none,
+		headlabel="0..*",
+		labeldistance=2,
+		taillabel=1];
+	login_attempts	[label="LOGIN_ATTEMPTS
+────────────
+email TEXT PK(1)
+attempted_at REAL PK(2)",
+		shape=box];
+	plans -> family_profiles	[dir=none,
+		label="member_ids / participants в JSON
+без SQL FK",
+		style=dashed];
+	plan_items	[label="PLAN_ITEMS
+────────────
+id TEXT PK
+plan_id TEXT FK
+day INTEGER
+slot INTEGER
+recipe_id TEXT FK
+scale REAL
+\
+UNIQUE(plan_id, day, slot)",
+		shape=box];
+	plans -> plan_items	[dir=none,
+		headlabel="0..*",
+		labeldistance=2,
+		taillabel=1];
+	recipes	[label="RECIPES
+────────────
+id TEXT PK
+name TEXT
+meal TEXT
+minutes INTEGER
+ingredients_json TEXT
+steps_json TEXT",
+		shape=box];
+	recipes -> plan_items	[dir=none,
+		headlabel="0..*",
+		labeldistance=2,
+		taillabel=1];
+	ingredients	[label="INGREDIENTS
+────────────
+id TEXT PK
+name TEXT
+category TEXT
+unit TEXT
+kcal REAL
+protein REAL
+fat REAL
+carbs \
+REAL
+allergens_json TEXT",
+		shape=box];
+	recipes -> ingredients	[dir=none,
+		label="ссылки id в JSON
+без SQL FK",
+		style=dashed];
+	offers	[label="OFFERS
+────────────
+id TEXT PK
+store_id TEXT FK
+ingredient_id TEXT FK
+pack_size REAL
+price_kopecks INTEGER
+\
+available INTEGER
+updated_at TEXT
+source TEXT
+city TEXT",
+		shape=box];
+	ingredients -> offers	[dir=none,
+		headlabel="0..*",
+		labeldistance=2,
+		taillabel=1];
+	ingredients -> pantry	[dir=none,
+		headlabel="0..*",
+		labeldistance=2,
+		taillabel=1];
+	stores	[label="STORES
+────────────
+id TEXT PK
+name TEXT",
+		shape=box];
+	stores -> offers	[dir=none,
+		headlabel="0..*",
+		labeldistance=2,
+		taillabel=1];
+}

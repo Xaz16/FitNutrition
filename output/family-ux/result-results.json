@@ -1,0 +1,42 @@
+{
+  "date": "2026-10-30T12:23:57.855Z",
+  "browser": "156.0.8078.79",
+  "checks": [
+    "all days and meal prices",
+    "budget red",
+    "save persists after reload",
+    "preview and cancel do not write",
+    "basket delta matches actual replacement",
+    "no document reload",
+    "replacement invalidates saved state",
+    "settings preserve budget and preferences"
+  ],
+  "layouts": [
+    {
+      "screen": "result",
+      "width": 360,
+      "overflow": false
+    },
+    {
+      "screen": "result",
+      "width": 768,
+      "overflow": false
+    },
+    {
+      "screen": "result",
+      "width": 1920,
+      "overflow": false
+    },
+    {
+      "screen": "alternatives",
+      "width": 360,
+      "overflow": false
+    },
+    {
+      "screen": "alternatives",
+      "width": 1440,
+      "overflow": false
+    }
+  ],
+  "consoleErrors": []
+}

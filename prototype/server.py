@@ -20,6 +20,7 @@ from domain import DomainError, validate_settings, nutrition, allowed, generate_
 from prices import DemoPriceProvider,PriceSourceUnavailable
 from profiles import validate_profile,plan_settings,profile_fingerprint,current_profile
 from replacements import meal_cost,preview_replacements,replacement_candidates
+from family import family_profiles,family_settings,plan_matches_profiles,add_portions
 
 ROOT=Path(__file__).resolve().parent
 DB_PATH=ROOT/'data/fitnutrition.sqlite3'
@@ -60,14 +61,16 @@ def snapshot(db,user):
  profile=db.execute('SELECT settings_json FROM profiles WHERE user_id=?',(user,)).fetchone()
  plan=db.execute('SELECT * FROM plans WHERE user_id=? ORDER BY created_at DESC,id DESC LIMIT 1',(user,)).fetchone()
  saved=current_profile(json.loads(profile[0])) if profile else None
- result={'profile':saved,'profile_complete':bool(saved and saved.get('completed')),'ingredients':list(ingredients.values()),'recipes':list(recipes.values()),'allergens':ALLERGENS,'plan':None,'test_data':True}
+ result={'profile':saved,'profile_complete':bool(saved and saved.get('completed')),'family_profiles':family_profiles(db,user),'ingredients':list(ingredients.values()),'recipes':list(recipes.values()),'allergens':ALLERGENS,'plan':None,'test_data':True}
  if not plan or not result['profile_complete']:return result
  settings=json.loads(plan['settings_json'])
- if settings.get('profile_fingerprint')!=profile_fingerprint(saved):
+ if not plan_matches_profiles(db,user,settings,saved):
   result['previous_plan_requires_update']=True
   return result
  items=[dict(r) for r in db.execute('SELECT * FROM plan_items WHERE plan_id=? ORDER BY day,slot',(plan['id'],))]
- for item in items:item['nutrition']=nutrition(recipes[item['recipe_id']],ingredients,item['scale'])
+ for item in items:
+  item['nutrition']=nutrition(recipes[item['recipe_id']],ingredients,item['scale'])
+  add_portions(item,settings,recipes[item['recipe_id']],ingredients)
  pantry={r['ingredient_id']:dict(r) for r in db.execute('SELECT * FROM pantry WHERE user_id=?',(user,))}
  lines=shopping(items,recipes,ingredients,pantry)
  stores=[dict(r) for r in db.execute('SELECT * FROM stores')]
@@ -122,7 +125,7 @@ class Handler(BaseHTTPRequestHandler):
   try:
    if not path.startswith('/api/'):
     if method!='GET':return self.send_json({'error':'Метод не поддерживается'},405)
-    filename={'/':'index.html','/index.html':'index.html','/app.js':'app.js','/flow.js':'flow.js','/profile.js':'profile.js','/result.js':'result.js','/style.css':'style.css'}.get(path)
+    filename={'/':'index.html','/index.html':'index.html','/app.js':'app.js','/flow.js':'flow.js','/profile.js':'profile.js','/family.js':'family.js','/result.js':'result.js','/style.css':'style.css'}.get(path)
     if not filename:return self.send_json({'error':'Не найдено'},404)
     body=(ROOT/'static'/filename).read_bytes()
     self.send_response(200);self.send_header('Content-Type',{'html':'text/html; charset=utf-8','js':'text/javascript; charset=utf-8','css':'text/css; charset=utf-8'}[filename.rsplit('.',1)[-1]])
@@ -168,6 +171,12 @@ class Handler(BaseHTTPRequestHandler):
     user=self.require_user(db)
     if path=='/api/state' and method=='GET':
      db.execute('BEGIN');return self.send_json(snapshot(db,user))
+    if path=='/api/family' and method=='POST':
+     data=self.read_json()
+     if not data.get('birth_date'):raise DomainError('Укажите дату рождения')
+     saved=validate_profile(data)
+     db.execute('INSERT INTO family_profiles VALUES (?,?,?,?)',(uuid.uuid4().hex,user,json.dumps(saved,ensure_ascii=False),now()))
+     db.commit();return self.send_json(snapshot(db,user),201)
     if path=='/api/profile' and method in ('PUT','PATCH'):
      data=self.read_json();previous=db.execute('SELECT settings_json FROM profiles WHERE user_id=?',(user,)).fetchone()
      if method=='PATCH':
@@ -184,7 +193,7 @@ class Handler(BaseHTTPRequestHandler):
     if path=='/api/plan' and method=='POST':
      options=self.read_json();ingredients,recipes=catalog(db)
      row=db.execute('SELECT settings_json FROM profiles WHERE user_id=?',(user,)).fetchone()
-     settings=plan_settings(json.loads(row[0]) if row else None,options,ingredients)
+     settings=family_settings(db,user,json.loads(row[0]) if row else None,options,ingredients)
      if not set(settings['allergens'])<=set(ALLERGENS) or not set(settings['excluded'])<=set(ingredients):raise DomainError('Неизвестное исключение')
      items=generate_plan(settings,recipes,ingredients);ident=uuid.uuid4().hex
      db.execute('INSERT INTO plans (id,user_id,start_date,days,settings_json,created_at) VALUES (?,?,?,?,?,?)',(ident,user,settings['start_date'],settings['days'],json.dumps(settings),now()))
@@ -205,7 +214,7 @@ class Handler(BaseHTTPRequestHandler):
      if not row:return self.send_json({'error':'Позиция не найдена'},404)
      ingredients,recipes=catalog(db);settings=json.loads(row['settings_json']);original=recipes[row['recipe_id']]
      current=db.execute('SELECT settings_json FROM profiles WHERE user_id=?',(user,)).fetchone()
-     if not current or not json.loads(current[0]).get('completed') or settings.get('profile_fingerprint')!=profile_fingerprint(json.loads(current[0])):raise DomainError('Профиль изменён. Составьте план заново.')
+     if not current or not plan_matches_profiles(db,user,settings,json.loads(current[0])):raise DomainError('Профиль изменён. Составьте план заново.')
      items=[dict(r) for r in db.execute('SELECT * FROM plan_items WHERE plan_id=? ORDER BY day,slot',(row['plan_id'],))]
      if path=='/api/alternatives' and method=='GET':
       pantry={r['ingredient_id']:dict(r) for r in db.execute('SELECT * FROM pantry WHERE user_id=?',(user,))}

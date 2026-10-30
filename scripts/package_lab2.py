@@ -15,7 +15,7 @@ required=['Статус','Контекст','Рассмотренные альт
 for file in (root/'docs/lab2/adr').glob('*.md'):
  text=file.read_text(encoding='utf-8');assert all('## '+s in text for s in required),file
 paths=[]
-for folder in ['prototype','docs/lab2','output/lab2','tools']:
+for folder in ['prototype','docs/lab2','output/lab2','output/family-ux','output/profile-navigation','tools']:
  paths.extend(p for p in (root/folder).rglob('*') if p.is_file() and not set(p.parts)&{'data','.venv','__pycache__','node_modules'} and p.suffix!='.zip')
 paths += [root/p for p in ['README.md','docs/lab1_revision.md','scripts/build_lab_reports.py','scripts/build_lab2_diagrams.cjs','scripts/build_lab2_wireframes.py','scripts/build_entry_diagrams.py','scripts/package_lab2.py','sources/lab2-assignment.txt']]
 paths += [p for p in (root/'sources/submitted-lab1').glob('*') if p.is_file()]

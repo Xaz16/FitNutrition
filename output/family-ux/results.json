@@ -1,0 +1,27 @@
+{
+  "date": "2026-10-30T12:27:15.809Z",
+  "browser": "156.0.8078.79",
+  "checks": [
+    "friendly empty result and menu",
+    "create family profile in plan",
+    "select existing profile without duplicate",
+    "family selection survives reload",
+    "total calories equal participant targets",
+    "individual meal portions",
+    "combined basket preview matches replacement",
+    "mobile result has no overflow"
+  ],
+  "participants": [
+    {
+      "name": "Азамат",
+      "kcal": 2345
+    },
+    {
+      "name": "Анна",
+      "kcal": 1917
+    }
+  ],
+  "total_kcal": 4262,
+  "basket_kopecks": 1202168,
+  "consoleErrors": []
+}

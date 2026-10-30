@@ -1,0 +1,121 @@
+{
+  "date": "2026-10-30T12:23:53.485Z",
+  "browser": "156.0.8078.79",
+  "checks": [
+    "global navigation on seven screens",
+    "single-field edit preserves other values",
+    "cancel does not save",
+    "birth date persists and age is automatic",
+    "completed profile never reopens wizard",
+    "mobile navigation opens and closes",
+    "changed profile invalidates plan"
+  ],
+  "layouts": [
+    {
+      "screen": "dashboard",
+      "width": 1440,
+      "overflow": false
+    },
+    {
+      "screen": "dashboard",
+      "width": 768,
+      "overflow": false
+    },
+    {
+      "screen": "dashboard",
+      "width": 360,
+      "overflow": false
+    },
+    {
+      "screen": "profile",
+      "width": 1440,
+      "overflow": false
+    },
+    {
+      "screen": "profile",
+      "width": 768,
+      "overflow": false
+    },
+    {
+      "screen": "profile",
+      "width": 360,
+      "overflow": false
+    },
+    {
+      "screen": "settings",
+      "width": 1440,
+      "overflow": false
+    },
+    {
+      "screen": "settings",
+      "width": 768,
+      "overflow": false
+    },
+    {
+      "screen": "settings",
+      "width": 360,
+      "overflow": false
+    },
+    {
+      "screen": "result",
+      "width": 1440,
+      "overflow": false
+    },
+    {
+      "screen": "result",
+      "width": 768,
+      "overflow": false
+    },
+    {
+      "screen": "result",
+      "width": 360,
+      "overflow": false
+    },
+    {
+      "screen": "menu",
+      "width": 1440,
+      "overflow": false
+    },
+    {
+      "screen": "menu",
+      "width": 768,
+      "overflow": false
+    },
+    {
+      "screen": "menu",
+      "width": 360,
+      "overflow": false
+    },
+    {
+      "screen": "shopping",
+      "width": 1440,
+      "overflow": false
+    },
+    {
+      "screen": "shopping",
+      "width": 768,
+      "overflow": false
+    },
+    {
+      "screen": "shopping",
+      "width": 360,
+      "overflow": false
+    },
+    {
+      "screen": "baskets",
+      "width": 1440,
+      "overflow": false
+    },
+    {
+      "screen": "baskets",
+      "width": 768,
+      "overflow": false
+    },
+    {
+      "screen": "baskets",
+      "width": 360,
+      "overflow": false
+    }
+  ],
+  "consoleErrors": []
+}

@@ -50,6 +50,13 @@
       }
     },
     {
+      "name": "family_profiles",
+      "attributes": {
+        "label": "FAMILY_PROFILES\n────────────\nid TEXT PK\nuser_id TEXT FK\nsettings_json TEXT\ncreated_at TEXT",
+        "shape": "box"
+      }
+    },
+    {
       "name": "plans",
       "attributes": {
         "label": "PLANS\n────────────\nid TEXT PK\nuser_id TEXT FK\nstart_date TEXT\ndays INTEGER\nsettings_json TEXT\ncreated_at TEXT\nstatus TEXT\nrevision INTEGER\nsaved_at TEXT",
@@ -200,10 +207,30 @@
       }
     },
     {
+      "tail": "users",
+      "head": "family_profiles",
+      "attributes": {
+        "label": "",
+        "dir": "none",
+        "taillabel": "1",
+        "headlabel": "0..*",
+        "labeldistance": 2
+      }
+    },
+    {
       "tail": "recipes",
       "head": "ingredients",
       "attributes": {
         "label": "ссылки id в JSON\nбез SQL FK",
+        "style": "dashed",
+        "dir": "none"
+      }
+    },
+    {
+      "tail": "plans",
+      "head": "family_profiles",
+      "attributes": {
+        "label": "member_ids / participants в JSON\nбез SQL FK",
         "style": "dashed",
         "dir": "none"
       }

@@ -14,6 +14,11 @@ CREATE TABLE IF NOT EXISTS profiles (
  user_id TEXT PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
  settings_json TEXT NOT NULL
 );
+CREATE TABLE IF NOT EXISTS family_profiles (
+ id TEXT PRIMARY KEY,
+ user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+ settings_json TEXT NOT NULL, created_at TEXT NOT NULL
+);
 CREATE TABLE IF NOT EXISTS recipes (
  id TEXT PRIMARY KEY, name TEXT NOT NULL, meal TEXT NOT NULL,
  minutes INTEGER NOT NULL, ingredients_json TEXT NOT NULL, steps_json TEXT NOT NULL

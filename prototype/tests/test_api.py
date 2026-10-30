@@ -37,6 +37,43 @@ class ApiTests(unittest.TestCase):
   self.assertEqual(self.request('/profile',{'birth_date':'2999-01-01'},method='PATCH')[0],422)
   self.assertEqual(self.request('/profile',{'birth_date':''},method='PATCH')[0],422)
   self.assertEqual(self.request('/state')[1]['profile']['birth_date'],'1996-05-12')
+ def family_member(self,**changes):
+  from datetime import date
+  data={'name':'Участник','birth_date':f'{date.today().year-30}-01-01','sex':'male','height':180,'weight':80,'activity':1.55,'goal':'lose',**changes}
+  code,view=self.request('/family',data);self.assertEqual(code,201)
+  return view['family_profiles'][-1]['id']
+ def test_family_portions_and_combined_shopping(self):
+  self.demo();solo=self.request('/plan',{})[1];ident=self.family_member()
+  code,view=self.request('/plan',{'member_ids':[ident]});self.assertEqual(code,201)
+  self.assertEqual(view['plan']['settings']['target']['kcal'],2*solo['plan']['settings']['target']['kcal'])
+  self.assertEqual(view['plan']['settings']['budget'],solo['plan']['settings']['budget'])
+  self.assertEqual(len(view['plan']['settings']['participants']),2)
+  for a,b in zip(view['plan']['items'],solo['plan']['items']):
+   self.assertEqual(a['recipe_id'],b['recipe_id']);self.assertAlmostEqual(a['scale'],2*b['scale'])
+   self.assertEqual(len(a['portions']),2);self.assertAlmostEqual(sum(p['nutrition']['kcal'] for p in a['portions']),a['nutrition']['kcal'],delta=.2)
+  for a,b in zip(view['shopping'],solo['shopping']):self.assertAlmostEqual(a['required'],2*b['required'],delta=.002)
+  item=view['plan']['items'][0];preview=self.request('/alternatives?item_id='+item['id'])[1];candidate=preview['alternatives'][0]
+  replaced=self.request('/replace',{'item_id':item['id'],'recipe_id':candidate['id'],'expected_revision':0})[1]
+  total=next(b['total_kopecks'] for b in replaced['baskets'] if b['id']==replaced['recommended'])
+  self.assertEqual(total,candidate['cart_total_kopecks']);self.assertEqual(len(replaced['plan']['items'][0]['portions']),2)
+ def test_family_restrictions_and_owner_isolation(self):
+  self.demo();ident=self.family_member(allergens=['молоко'],preferences=['no_fish'])
+  code,view=self.request('/plan',{'member_ids':[ident],'repeat':7,'preferences':[]});self.assertEqual(code,201)
+  self.assertIn('молоко',view['plan']['settings']['allergens']);self.assertIn('no_fish',view['plan']['settings']['preferences'])
+  ingredients={i['id']:i for i in view['ingredients']};recipes={r['id']:r for r in view['recipes']}
+  for item in view['plan']['items']:
+   recipe=recipes[item['recipe_id']];self.assertNotIn('fish',recipe['ingredients'])
+   self.assertTrue(all('молоко' not in ingredients[i]['allergens'] for i in recipe['ingredients']))
+  other=self.new_client();self.request('/auth/demo',{},client=other);self.request('/profile',{'name':'Другой','age':30,'sex':'male','height':180,'weight':80,'activity':1.55,'goal':'lose'},method='PUT',client=other)
+  self.assertEqual(self.request('/state',client=other)[1]['family_profiles'],[])
+  self.assertEqual(self.request('/plan',{'member_ids':[ident]},client=other)[0],422)
+  self.assertEqual(self.request('/plan',{'member_ids':[ident,ident]})[0],422)
+ def test_underage_family_does_not_destroy_existing_plan(self):
+  from datetime import date
+  self.demo();before=self.request('/plan',{})[1]['plan']['id']
+  ident=self.family_member(birth_date=f'{date.today().year-16}-01-01')
+  self.assertEqual(self.request('/plan',{'member_ids':[ident]})[0],422)
+  self.assertEqual(self.request('/state')[1]['plan']['id'],before)
  def test_register_login_hash_and_shared_account(self):
   credentials={'email':'account@example.org','password':'Long-pass-123'}
   self.assertEqual(self.request('/auth/register',credentials)[0],200)

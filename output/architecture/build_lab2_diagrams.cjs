@@ -11,10 +11,10 @@ const base=(nodes,edges,rankdir='TB')=>({directed:true,graphAttributes:{rankdir,
 const graphs={};
 graphs.structure=base([
  n('ui','Браузер: index.html / app.js / style.css\nВход, навигация, каталог и закупки'),
- n('onboarding','flow.js\nОнбординг, черновик localStorage\nПрофиль, дашборд и настройки плана'),
+ n('onboarding','flow.js / profile.js / family.js\nОбщий каркас, профиль и онбординг\nУчастники и настройки плана'),
  n('result','result.js\nРезультат меню, окно альтернатив\nПрогноз цены и выбор замены'),
  n('http','server.py / Handler\nHTTP / JSON, сессия, маршруты\nОркестрация расчётов и сохранения'),
- n('profile','profiles.py\nvalidate_profile, plan_settings\nГотовность и отпечаток профиля'),
+ n('profile','profiles.py / family.py\nДата рождения, профиль и участники\nИндивидуальные нормы, общий план'),
  n('replacement','replacements.py\nreplacement_candidates\npreview_replacements, meal_cost'),
  n('domain','domain.py\nНормы, подбор меню, allowed\nСписок и расчёт полных корзин'),
  n('provider','prices.py / DemoPriceProvider\nУчебные предложения\nЧтение и обновление offers'),
@@ -27,7 +27,7 @@ graphs.structure=base([
  e('profile','domain','validate_settings'),e('replacement','domain','фильтр, КБЖУ, корзины'),
  e('http','domain','генерация и снимок'),e('http','provider','цены'),
  e('http','storage','данные, владение, revision'),e('provider','db','чтение / запись offers'),
- e('storage','db','параметризованный SQL')]);
+ e('storage','db','параметризованный SQL'),e('profile','db','family.py: чтение профилей семьи')]);
 graphs.usecase=base([n('actor','Пользователь\n(взрослый)','plaintext'),n('login','Зарегистрироваться / войти','ellipse'),n('prefs','Задать параметры,\nбюджет и исключения','ellipse'),n('plan','Составить меню','ellipse'),n('replace','Заменить блюдо','ellipse'),n('recipe','Просмотреть рецепт','ellipse'),n('list','Получить список покупок','ellipse'),n('stock','Учесть домашние запасы','ellipse'),n('basket','Сравнить полные корзины','ellipse'),n('packs','Рассчитать целые упаковки','ellipse')],[...['login','prefs','plan','replace','recipe','list','stock','basket'].map(id=>e('actor',id,'',{arrowhead:'none'})),e('plan','list','«include»',{style:'dashed'}),e('basket','packs','«include»',{style:'dashed'}),e('replace','list','«include»',{style:'dashed'})],'LR');
  graphs.usecase.subgraphs=[{name:'cluster_system',graphAttributes:{label:'Fit Nutrition Supply',fontname:'Times New Roman',fontsize:15},nodes:graphs.usecase.nodes.filter(v=>v.name!=='actor')}];graphs.usecase.nodes=graphs.usecase.nodes.filter(v=>v.name==='actor');
 graphs.usecase.edgeAttributes.arrowhead='open';
@@ -51,6 +51,7 @@ const tables={
  sessions:'token_hash TEXT PK\nuser_id TEXT FK\nexpires_at REAL',
  login_attempts:'email TEXT PK(1)\nattempted_at REAL PK(2)',
  profiles:'user_id TEXT PK FK\nsettings_json TEXT',
+ family_profiles:'id TEXT PK\nuser_id TEXT FK\nsettings_json TEXT\ncreated_at TEXT',
  plans:'id TEXT PK\nuser_id TEXT FK\nstart_date TEXT\ndays INTEGER\nsettings_json TEXT\ncreated_at TEXT\nstatus TEXT\nrevision INTEGER\nsaved_at TEXT',
  plan_items:'id TEXT PK\nplan_id TEXT FK\nday INTEGER\nslot INTEGER\nrecipe_id TEXT FK\nscale REAL\nUNIQUE(plan_id, day, slot)',
  recipes:'id TEXT PK\nname TEXT\nmeal TEXT\nminutes INTEGER\ningredients_json TEXT\nsteps_json TEXT',
@@ -59,7 +60,7 @@ const tables={
  offers:'id TEXT PK\nstore_id TEXT FK\ningredient_id TEXT FK\npack_size REAL\nprice_kopecks INTEGER\navailable INTEGER\nupdated_at TEXT\nsource TEXT\ncity TEXT',
  pantry:'user_id TEXT PK(1) FK\ningredient_id TEXT PK(2) FK\namount REAL\npurchased INTEGER'
 };
-graphs.er=base(Object.entries(tables).map(([id,attrs])=>n(id,id.toUpperCase()+'\n────────────\n'+attrs)),[['users','sessions'],['users','plans'],['plans','plan_items'],['recipes','plan_items'],['stores','offers'],['ingredients','offers'],['users','pantry'],['ingredients','pantry'],['users','profiles']].map(([a,b])=>e(a,b,'',{dir:'none',taillabel:'1',headlabel:b==='profiles'?'0..1':'0..*',labeldistance:2})).concat([e('recipes','ingredients','ссылки id в JSON\nбез SQL FK',{style:'dashed',dir:'none'})]),'LR');
+graphs.er=base(Object.entries(tables).map(([id,attrs])=>n(id,id.toUpperCase()+'\n────────────\n'+attrs)),[['users','sessions'],['users','plans'],['plans','plan_items'],['recipes','plan_items'],['stores','offers'],['ingredients','offers'],['users','pantry'],['ingredients','pantry'],['users','profiles'],['users','family_profiles']].map(([a,b])=>e(a,b,'',{dir:'none',taillabel:'1',headlabel:b==='profiles'?'0..1':'0..*',labeldistance:2})).concat([e('recipes','ingredients','ссылки id в JSON\nбез SQL FK',{style:'dashed',dir:'none'}),e('plans','family_profiles','member_ids / participants в JSON\nбез SQL FK',{style:'dashed',dir:'none'})]),'LR');
 graphs.er.nodeAttributes.fontsize=12;
 
 // Six domain entities mapped to physical tables. Dashed composition is JSON, not an SQL FK.
