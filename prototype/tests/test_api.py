@@ -22,6 +22,21 @@ class ApiTests(unittest.TestCase):
   return self.request('/profile',{'name':'Азамат','age':30,'sex':'male','height':180,'weight':80,'activity':1.55,'goal':'lose',**changes},method='PUT')
  def demo(self):
   self.assertEqual(self.request('/auth/demo',{})[0],200);self.assertEqual(self.save_profile()[0],200)
+ def test_birth_date_and_single_field_edit(self):
+  self.demo();before=self.request('/state')[1]['profile']
+  code,view=self.request('/profile',{'weight':81.5},method='PATCH')
+  self.assertEqual(code,200);self.assertEqual(view['profile']['weight'],81.5)
+  self.assertEqual({k:v for k,v in view['profile'].items() if k!='weight'},{k:v for k,v in before.items() if k!='weight'})
+  code,view=self.request('/profile',{'birth_date':'1996-05-12'},method='PATCH')
+  self.assertEqual(code,200);self.assertEqual(view['profile']['age'],server.current_profile({'birth_date':'1996-05-12'})['age'])
+  self.assertEqual(view['profile']['birth_date'],'1996-05-12')
+  self.assertEqual(self.request('/plan',{})[0],201)
+  self.assertEqual(self.request('/profile',{'height':181},method='PATCH')[1]['plan'],None)
+  self.assertEqual(self.request('/profile',{'weight':82,'height':182},method='PATCH')[0],422)
+  self.assertEqual(self.request('/profile',{'age':20},method='PATCH')[0],422)
+  self.assertEqual(self.request('/profile',{'birth_date':'2999-01-01'},method='PATCH')[0],422)
+  self.assertEqual(self.request('/profile',{'birth_date':''},method='PATCH')[0],422)
+  self.assertEqual(self.request('/state')[1]['profile']['birth_date'],'1996-05-12')
  def test_register_login_hash_and_shared_account(self):
   credentials={'email':'account@example.org','password':'Long-pass-123'}
   self.assertEqual(self.request('/auth/register',credentials)[0],200)

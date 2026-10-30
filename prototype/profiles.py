@@ -1,17 +1,37 @@
 """Saved user profile, separate from the settings snapshot of a particular plan."""
 import math
 import hashlib,json
+from datetime import date
 from domain import DomainError,validate_settings
 from catalog import ALLERGENS
 
 PREFERENCES={'vegetarian','no_fish','no_milk'}
 
+def age_on(birth_date,today=None):
+ today=today or date.today()
+ if not isinstance(birth_date,str) or len(birth_date)!=10:raise ValueError('Некорректная дата')
+ born=date.fromisoformat(birth_date)
+ if born>today:raise ValueError('Дата в будущем')
+ return today.year-born.year-((today.month,today.day)<(born.month,born.day))
+
+def current_profile(profile):
+ if not profile:return profile
+ return {**profile,'age':age_on(profile['birth_date'])} if profile.get('birth_date') else dict(profile)
+
 def profile_fingerprint(profile):
+ profile=current_profile(profile)
  relevant={k:v for k,v in profile.items() if k not in ('name','completed')}
  return hashlib.sha256(json.dumps(relevant,sort_keys=True,ensure_ascii=False).encode()).hexdigest()
 
 def validate_profile(data):
  result={};errors={}
+ data=dict(data)
+ if data.get('birth_date') not in (None,''):
+  try:
+   data['age']=age_on(data['birth_date'])
+   if not 14<=data['age']<=90:raise ValueError()
+   result['birth_date']=data['birth_date']
+  except (TypeError,ValueError):errors['birth_date']='Укажите дату рождения: возраст от 14 до 90 лет'
  for key,lo,hi,step in [('age',14,90,1),('weight',40,200,.5),('height',140,220,1)]:
   try:
    value=float(data[key])
@@ -47,6 +67,7 @@ def validate_profile(data):
  return result
 
 def plan_settings(profile,options,ingredients):
+ profile=current_profile(profile)
  if not profile or not profile.get('completed'):raise DomainError('Сначала сохраните профиль',{'profile':'Профиль не заполнен'})
  if profile['age']<18:raise DomainError('Профиль сохранён. Автоматический рацион пока доступен с 18 лет.',{'age':'Расчёт для взрослых'})
  # Account-level allergies cannot be disabled by sending a different plan payload.

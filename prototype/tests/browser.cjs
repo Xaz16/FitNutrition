@@ -31,6 +31,7 @@ const fs=require('node:fs');const path=require('node:path');
  for(const width of [360,768,1920]){
   await page.setViewportSize({width,height:1000});
   for(const [screen,label] of [['settings','Настройки плана'],['menu','Моё меню'],['shopping','Список покупок'],['baskets','Сравнить корзины']]){
+   const toggle=page.locator('#toggle-navigation');if(await toggle.isVisible()&&await toggle.getAttribute('aria-expanded')==='false')await toggle.click();
    await page.getByRole('button',{name:label,exact:true}).click();
    const overflow=await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth);
    layouts.push({width,screen,overflow});if(overflow)throw Error(`Horizontal overflow ${screen} ${width}`);
