@@ -1,0 +1,73 @@
+digraph {
+	graph [bb="0 0 1029 510",
+		bgcolor=white,
+		nodesep=0.35,
+		pad=0.2,
+		rankdir=TB,
+		ranksep=0.45,
+		splines=polyline
+	];
+	node [color=black,
+		fontname="Times New Roman",
+		fontsize=13,
+		margin="0.15,0.12",
+		style=solid
+	];
+	edge [arrowsize=0.65,
+		fontname="Times New Roman",
+		fontsize=11
+	];
+	ui	[label="Браузер: index.html / app.js / style.css
+Вход, навигация, каталог и закупки",
+		shape=box];
+	onboarding	[label="flow.js
+Онбординг, черновик localStorage
+Профиль, дашборд и настройки плана",
+		shape=box];
+	ui -> onboarding	[label=формы];
+	result	[label="result.js
+Результат меню, окно альтернатив
+Прогноз цены и выбор замены",
+		shape=box];
+	ui -> result	[label=результат];
+	http	[label="server.py / Handler
+HTTP / JSON, сессия, маршруты
+Оркестрация расчётов и сохранения",
+		shape=box];
+	ui -> http	[label="остальные API"];
+	onboarding -> http	[label="PUT /profile; POST /plan"];
+	result -> http	[label="GET /alternatives; POST /replace; /plan/save"];
+	profile	[label="profiles.py
+validate_profile, plan_settings
+Готовность и отпечаток профиля",
+		shape=box];
+	http -> profile	[label="валидация профиля"];
+	replacement	[label="replacements.py
+replacement_candidates
+preview_replacements, meal_cost",
+		shape=box];
+	http -> replacement	[label="кандидаты и прогноз"];
+	domain	[label="domain.py
+Нормы, подбор меню, allowed
+Список и расчёт полных корзин",
+		shape=box];
+	http -> domain	[label="генерация и снимок"];
+	provider	[label="prices.py / DemoPriceProvider
+Учебные предложения
+Чтение и обновление offers",
+		shape=box];
+	http -> provider	[label=цены];
+	storage	[label="server.py / SQLite
+Регистрация, bcrypt и cookie-сессии
+Профили, планы, SQL и транзакции",
+		shape=box];
+	http -> storage	[label="данные, владение, revision"];
+	profile -> domain	[label=validate_settings];
+	replacement -> domain	[label="фильтр, КБЖУ, корзины"];
+	db	[label="SQLite / schema.sql
+users, sessions, profiles, plans, plan_items
+recipes, ingredients, offers, pantry",
+		shape=cylinder];
+	provider -> db	[label="чтение / запись offers"];
+	storage -> db	[label="параметризованный SQL"];
+}

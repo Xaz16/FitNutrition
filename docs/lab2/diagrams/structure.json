@@ -24,49 +24,70 @@
     {
       "name": "ui",
       "attributes": {
-        "label": "Браузерный интерфейс\nHTML / CSS / JavaScript",
+        "label": "Браузер: index.html / app.js / style.css\nВход, навигация, каталог и закупки",
+        "shape": "box"
+      }
+    },
+    {
+      "name": "onboarding",
+      "attributes": {
+        "label": "flow.js\nОнбординг, черновик localStorage\nПрофиль, дашборд и настройки плана",
+        "shape": "box"
+      }
+    },
+    {
+      "name": "result",
+      "attributes": {
+        "label": "result.js\nРезультат меню, окно альтернатив\nПрогноз цены и выбор замены",
         "shape": "box"
       }
     },
     {
       "name": "http",
       "attributes": {
-        "label": "HTTP API\nМаршруты, JSON, ошибки, сессия",
+        "label": "server.py / Handler\nHTTP / JSON, сессия, маршруты\nОркестрация расчётов и сохранения",
         "shape": "box"
       }
     },
     {
-      "name": "auth",
+      "name": "profile",
       "attributes": {
-        "label": "AuthService\nРегистрация, вход, bcrypt",
+        "label": "profiles.py\nvalidate_profile, plan_settings\nГотовность и отпечаток профиля",
+        "shape": "box"
+      }
+    },
+    {
+      "name": "replacement",
+      "attributes": {
+        "label": "replacements.py\nreplacement_candidates\npreview_replacements, meal_cost",
         "shape": "box"
       }
     },
     {
       "name": "domain",
       "attributes": {
-        "label": "Прикладные функции domain.py\nНормы → меню → список → корзины",
+        "label": "domain.py\nНормы, подбор меню, allowed\nСписок и расчёт полных корзин",
         "shape": "box"
       }
     },
     {
       "name": "provider",
       "attributes": {
-        "label": "DemoPriceProvider\nУчебные предложения\nБудущий внешний адаптер",
+        "label": "prices.py / DemoPriceProvider\nУчебные предложения\nЧтение и обновление offers",
         "shape": "box"
       }
     },
     {
-      "name": "repo",
+      "name": "storage",
       "attributes": {
-        "label": "Repository / server.py\nSQL, владение данными, транзакции",
+        "label": "server.py / SQLite\nРегистрация, bcrypt и cookie-сессии\nПрофили, планы, SQL и транзакции",
         "shape": "box"
       }
     },
     {
       "name": "db",
       "attributes": {
-        "label": "SQLite\nУчётные записи, планы, каталог, цены",
+        "label": "SQLite / schema.sql\nusers, sessions, profiles, plans, plan_items\nrecipes, ingredients, offers, pantry",
         "shape": "cylinder"
       }
     }
@@ -74,59 +95,100 @@
   "edges": [
     {
       "tail": "ui",
+      "head": "onboarding",
+      "attributes": {
+        "label": "формы"
+      }
+    },
+    {
+      "tail": "ui",
+      "head": "result",
+      "attributes": {
+        "label": "результат"
+      }
+    },
+    {
+      "tail": "ui",
       "head": "http",
       "attributes": {
-        "label": "HTTP / JSON"
+        "label": "остальные API"
+      }
+    },
+    {
+      "tail": "onboarding",
+      "head": "http",
+      "attributes": {
+        "label": "PUT /profile; POST /plan"
+      }
+    },
+    {
+      "tail": "result",
+      "head": "http",
+      "attributes": {
+        "label": "GET /alternatives; POST /replace; /plan/save"
       }
     },
     {
       "tail": "http",
-      "head": "auth",
+      "head": "profile",
       "attributes": {
-        "label": ""
+        "label": "валидация профиля"
+      }
+    },
+    {
+      "tail": "http",
+      "head": "replacement",
+      "attributes": {
+        "label": "кандидаты и прогноз"
+      }
+    },
+    {
+      "tail": "profile",
+      "head": "domain",
+      "attributes": {
+        "label": "validate_settings"
+      }
+    },
+    {
+      "tail": "replacement",
+      "head": "domain",
+      "attributes": {
+        "label": "фильтр, КБЖУ, корзины"
       }
     },
     {
       "tail": "http",
       "head": "domain",
       "attributes": {
-        "label": ""
+        "label": "генерация и снимок"
       }
     },
     {
       "tail": "http",
-      "head": "repo",
+      "head": "provider",
       "attributes": {
-        "label": ""
+        "label": "цены"
+      }
+    },
+    {
+      "tail": "http",
+      "head": "storage",
+      "attributes": {
+        "label": "данные, владение, revision"
       }
     },
     {
       "tail": "provider",
-      "head": "repo",
-      "attributes": {
-        "label": "fixtures / offers"
-      }
-    },
-    {
-      "tail": "domain",
-      "head": "repo",
-      "attributes": {
-        "label": "данные через API-обработчик",
-        "dir": "both"
-      }
-    },
-    {
-      "tail": "auth",
-      "head": "repo",
-      "attributes": {
-        "label": ""
-      }
-    },
-    {
-      "tail": "repo",
       "head": "db",
       "attributes": {
-        "label": "SQL + параметры"
+        "label": "чтение / запись offers"
+      }
+    },
+    {
+      "tail": "storage",
+      "head": "db",
+      "attributes": {
+        "label": "параметризованный SQL"
       }
     }
   ]

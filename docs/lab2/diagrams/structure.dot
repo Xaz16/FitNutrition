@@ -1,5 +1,5 @@
 digraph {
-	graph [bb="0 0 644 445",
+	graph [bb="0 0 1029 510",
 		bgcolor=white,
 		nodesep=0.35,
 		pad=0.2,
@@ -17,35 +17,57 @@ digraph {
 		fontname="Times New Roman",
 		fontsize=11
 	];
-	ui	[label="Браузерный интерфейс
-HTML / CSS / JavaScript",
+	ui	[label="Браузер: index.html / app.js / style.css
+Вход, навигация, каталог и закупки",
 		shape=box];
-	http	[label="HTTP API
-Маршруты, JSON, ошибки, сессия",
+	onboarding	[label="flow.js
+Онбординг, черновик localStorage
+Профиль, дашборд и настройки плана",
 		shape=box];
-	ui -> http	[label="HTTP / JSON"];
-	auth	[label="AuthService
-Регистрация, вход, bcrypt",
+	ui -> onboarding	[label=формы];
+	result	[label="result.js
+Результат меню, окно альтернатив
+Прогноз цены и выбор замены",
 		shape=box];
-	http -> auth;
-	domain	[label="Прикладные функции domain.py
-Нормы → меню → список → корзины",
+	ui -> result	[label=результат];
+	http	[label="server.py / Handler
+HTTP / JSON, сессия, маршруты
+Оркестрация расчётов и сохранения",
 		shape=box];
-	http -> domain;
-	repo	[label="Repository / server.py
-SQL, владение данными, транзакции",
+	ui -> http	[label="остальные API"];
+	onboarding -> http	[label="PUT /profile; POST /plan"];
+	result -> http	[label="GET /alternatives; POST /replace; /plan/save"];
+	profile	[label="profiles.py
+validate_profile, plan_settings
+Готовность и отпечаток профиля",
 		shape=box];
-	http -> repo;
-	auth -> repo;
-	domain -> repo	[dir=both,
-		label="данные через API-обработчик"];
-	provider	[label="DemoPriceProvider
+	http -> profile	[label="валидация профиля"];
+	replacement	[label="replacements.py
+replacement_candidates
+preview_replacements, meal_cost",
+		shape=box];
+	http -> replacement	[label="кандидаты и прогноз"];
+	domain	[label="domain.py
+Нормы, подбор меню, allowed
+Список и расчёт полных корзин",
+		shape=box];
+	http -> domain	[label="генерация и снимок"];
+	provider	[label="prices.py / DemoPriceProvider
 Учебные предложения
-Будущий внешний адаптер",
+Чтение и обновление offers",
 		shape=box];
-	provider -> repo	[label="fixtures / offers"];
-	db	[label="SQLite
-Учётные записи, планы, каталог, цены",
+	http -> provider	[label=цены];
+	storage	[label="server.py / SQLite
+Регистрация, bcrypt и cookie-сессии
+Профили, планы, SQL и транзакции",
+		shape=box];
+	http -> storage	[label="данные, владение, revision"];
+	profile -> domain	[label=validate_settings];
+	replacement -> domain	[label="фильтр, КБЖУ, корзины"];
+	db	[label="SQLite / schema.sql
+users, sessions, profiles, plans, plan_items
+recipes, ingredients, offers, pantry",
 		shape=cylinder];
-	repo -> db	[label="SQL + параметры"];
+	provider -> db	[label="чтение / запись offers"];
+	storage -> db	[label="параметризованный SQL"];
 }

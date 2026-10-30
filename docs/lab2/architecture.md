@@ -16,7 +16,7 @@
 
 ## 2 Структурная схема и технологии
 
-Принят модульный монолит с браузерным интерфейсом и одним серверным процессом. Интерфейс отправляет JSON-запросы; сервер проверяет сессию и входные данные, вызывает прикладные функции и обращается к SQLite. Доменные расчёты вынесены из HTTP-обработчика в `domain.py`.
+Архитектура - модульный монолит. Браузер обращается к HTTP API; сервер проверяет сессию и ввод, вызывает расчётные функции и сохраняет данные в SQLite.
 
 [[diagram:structure]]
 
@@ -24,19 +24,19 @@
 
 | Подсистема | Ответственность | Реализация |
 |---|---|---|
-| UI | Формы, маршруты экранов, диалог рецепта, состояния ошибок | static/index.html, app.js, style.css |
+| UI | Навигация, онбординг, результат и выбор замены | index.html, app.js, flow.js, result.js, style.css |
 | HTTP API | JSON, валидация запросов, принадлежность данных пользователю | server.py, Handler |
 | Авторизация | Регистрация, bcrypt, cookie-сессии и ограничение попыток | server.py, таблицы users, sessions, login_attempts |
+| Профиль | Валидация, готовность, объединение с параметрами плана | profiles.py, validate_profile, plan_settings |
 | Планирование | Норма калорий, подбор допустимых блюд, размеры порций | domain.py, validate_settings, generate_plan |
+| Замена блюда | Фильтр кандидатов, прогноз корзины и цена ингредиентов | replacements.py, replacement_candidates, preview_replacements, meal_cost |
 | Закупки | Список, запасы, упаковки, полнота, сравнение, бюджет | domain.py, shopping, calculate_baskets |
 | Источник цен | Чтение предложений и обновление демонстрационного набора | prices.py, DemoPriceProvider |
 | Хранение | Параметризованный SQL, транзакции, внешние ключи | server.py, connect, schema.sql |
 
-Авторизация и SQL находятся в server.py; вычисления и источник цен вынесены в отдельные модули одного процесса.
+Онбординг связывает flow.js с profiles.py, замена - result.js с replacements.py. Handler передаёт им данные из SQLite. Расчёты используют domain.py без доступа к БД; SQL и авторизация находятся в server.py, цены - в prices.py.
 
-Стек: Python 3.10+, http.server, sqlite3, SQLite, bcrypt 5.0.0, HTML5, CSS3, JavaScript ES2020, HTTP/JSON. Документы строятся через Graphviz, draw.io, python-docx и LibreOffice.
-
-HTTP-сервер слушает 127.0.0.1. Для публикации нужны сервер приложений и HTTPS; эта часть NFR-01 пока не выполнена.
+Стек: Python 3.10+, http.server, sqlite3, SQLite, bcrypt 5.0.0, HTML5, CSS3, JavaScript ES2020, HTTP/JSON.
 
 ## 3 Сценарии использования и интерфейс
 

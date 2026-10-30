@@ -130,7 +130,7 @@ def parse(doc,text,adr=False,counters=None,compact=False):
 def append_figures(doc):
  for index,(name,title) in enumerate(FIGURES,1):
   sec=doc.add_section(WD_SECTION.NEW_PAGE);sec.different_first_page_header_footer=False
-  wide=name in ('usecase','wireframes','er','entry_flow','onboarding_screens','er_domain')
+  wide=name in ('structure','usecase','wireframes','er','entry_flow','onboarding_screens','er_domain')
   landscape=wide or name=='structure'
   if name in ('activity_alternative','activity_registration','activity_generation'):sec.page_width=Cm(29.7);sec.page_height=Cm(42)
   elif wide:sec.page_width=Cm(42);sec.page_height=Cm(29.7)
