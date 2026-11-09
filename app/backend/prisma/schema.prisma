@@ -1,0 +1,241 @@
+generator client {
+  provider     = "prisma-client"
+  output       = "../src/generated/prisma"
+  moduleFormat = "esm"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Sex {
+  MALE
+  FEMALE
+}
+
+enum Goal {
+  LOSE
+  MAINTAIN
+  GAIN
+}
+
+enum MealType {
+  BREAKFAST
+  LUNCH
+  DINNER
+  SNACK
+}
+
+enum Unit {
+  G
+  ML
+  PCS
+}
+
+enum IngredientCategory {
+  VEGETABLES
+  FRUITS
+  DAIRY
+  MEAT_FISH
+  GROCERY
+  BAKERY
+  EGGS
+  OTHER
+}
+
+enum AnalysisStatus {
+  READY
+  FAILED
+}
+
+model User {
+  id               String            @id @default(uuid()) @db.Uuid
+  email            String            @unique
+  passwordHash     String
+  failedLogins     Int               @default(0)
+  firstFailedAt    DateTime?
+  lockedUntil      DateTime?
+  createdAt        DateTime          @default(now())
+  settings         UserSettings?
+  householdMembers HouseholdMember[]
+  mealPlans        MealPlan[]
+}
+
+model UserSettings {
+  userId             String  @id @db.Uuid
+  city               String  @default("Ижевск")
+  mealsPerDay        Int     @default(3)
+  repeatLimitPerWeek Int     @default(2)
+  monthlyBudgetRub   Decimal @db.Decimal(10, 2)
+  user               User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model HouseholdMember {
+  id             String              @id @default(uuid()) @db.Uuid
+  userId         String              @db.Uuid
+  name           String
+  isOwner        Boolean             @default(false)
+  sex            Sex
+  age            Int
+  heightCm       Int
+  weightKg       Decimal             @db.Decimal(5, 1)
+  activityFactor Decimal             @db.Decimal(4, 3)
+  goal           Goal
+  user           User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  allergens      MemberAllergen[]
+  exclusions     MemberExclusion[]
+
+  @@index([userId])
+}
+
+model Allergen {
+  code        String               @id
+  name        String
+  members     MemberAllergen[]
+  ingredients IngredientAllergen[]
+}
+
+model MemberAllergen {
+  memberId     String          @db.Uuid
+  allergenCode String
+  member       HouseholdMember @relation(fields: [memberId], references: [id], onDelete: Cascade)
+  allergen     Allergen        @relation(fields: [allergenCode], references: [code])
+
+  @@id([memberId, allergenCode])
+}
+
+model MemberExclusion {
+  memberId     String          @db.Uuid
+  ingredientId Int
+  member       HouseholdMember @relation(fields: [memberId], references: [id], onDelete: Cascade)
+  ingredient   Ingredient      @relation(fields: [ingredientId], references: [id])
+
+  @@id([memberId, ingredientId])
+}
+
+model Ingredient {
+  id            Int                  @id @default(autoincrement())
+  name          String               @unique
+  category      IngredientCategory
+  baseUnit      Unit
+  gramsPerPiece Decimal?             @db.Decimal(7, 1)
+  allergens     IngredientAllergen[]
+  dishes        DishIngredient[]
+  products      Product[]
+  exclusions    MemberExclusion[]
+  shoppingMarks ShoppingMark[]
+}
+
+model IngredientAllergen {
+  ingredientId Int
+  allergenCode String
+  ingredient   Ingredient @relation(fields: [ingredientId], references: [id], onDelete: Cascade)
+  allergen     Allergen   @relation(fields: [allergenCode], references: [code])
+
+  @@id([ingredientId, allergenCode])
+}
+
+model Dish {
+  id                  Int              @id @default(autoincrement())
+  name                String           @unique
+  mealType            MealType
+  baseServings        Int
+  kcalPerServing      Int
+  proteinG            Decimal?         @db.Decimal(6, 1)
+  fatG                Decimal?         @db.Decimal(6, 1)
+  carbsG              Decimal?         @db.Decimal(6, 1)
+  cookTimeMin         Int
+  steps               String[]
+  compositionComplete Boolean          @default(true)
+  ingredients         DishIngredient[]
+  plannedMeals        PlannedMeal[]
+
+  @@index([mealType])
+}
+
+model DishIngredient {
+  dishId       Int
+  ingredientId Int
+  quantity     Decimal    @db.Decimal(8, 1)
+  unit         Unit
+  dish         Dish       @relation(fields: [dishId], references: [id], onDelete: Cascade)
+  ingredient   Ingredient @relation(fields: [ingredientId], references: [id])
+
+  @@id([dishId, ingredientId])
+}
+
+model MealPlan {
+  id              String         @id @default(uuid()) @db.Uuid
+  userId          String         @db.Uuid
+  startDate       DateTime       @db.Date
+  days            Int
+  mealsPerDay     Int
+  dailyKcalTarget Int
+  budgetRub       Decimal        @db.Decimal(10, 2)
+  needsRecheck    Boolean        @default(false)
+  createdAt       DateTime       @default(now())
+  user            User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  meals           PlannedMeal[]
+  shoppingMarks   ShoppingMark[]
+  analyses        AiAnalysis[]
+
+  @@index([userId])
+}
+
+model PlannedMeal {
+  id       String   @id @default(uuid()) @db.Uuid
+  planId   String   @db.Uuid
+  dayIndex Int
+  slot     Int
+  mealType MealType
+  dishId   Int
+  servings Decimal  @db.Decimal(5, 2)
+  plan     MealPlan @relation(fields: [planId], references: [id], onDelete: Cascade)
+  dish     Dish     @relation(fields: [dishId], references: [id])
+
+  @@unique([planId, dayIndex, slot])
+}
+
+model ShoppingMark {
+  planId       String     @db.Uuid
+  ingredientId Int
+  bought       Boolean    @default(false)
+  atHomeQty    Decimal    @default(0) @db.Decimal(8, 1)
+  plan         MealPlan   @relation(fields: [planId], references: [id], onDelete: Cascade)
+  ingredient   Ingredient @relation(fields: [ingredientId], references: [id])
+
+  @@id([planId, ingredientId])
+}
+
+model RetailChain {
+  code     String    @id
+  name     String
+  products Product[]
+}
+
+model Product {
+  id             Int         @id @default(autoincrement())
+  chainCode      String
+  ingredientId   Int
+  title          String
+  packSize       Decimal     @db.Decimal(8, 1)
+  packUnit       Unit
+  priceRub       Decimal     @db.Decimal(10, 2)
+  inStock        Boolean     @default(true)
+  priceUpdatedAt DateTime
+  chain          RetailChain @relation(fields: [chainCode], references: [code])
+  ingredient     Ingredient  @relation(fields: [ingredientId], references: [id])
+
+  @@unique([chainCode, ingredientId])
+}
+
+model AiAnalysis {
+  id              String         @id @default(uuid()) @db.Uuid
+  planId          String         @db.Uuid
+  status          AnalysisStatus
+  recommendations Json
+  createdAt       DateTime       @default(now())
+  plan            MealPlan       @relation(fields: [planId], references: [id], onDelete: Cascade)
+
+  @@index([planId])
+}
