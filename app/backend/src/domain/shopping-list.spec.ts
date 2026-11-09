@@ -35,6 +35,15 @@ describe('buildShoppingList (FR-09, FR-10)', () => {
     expect(groups[0].lines[0]).toMatchObject({ unit: 'G', required: 360 });
   });
 
+  it('rounds pieces up to whole items', () => {
+    const egg: IngredientInfo = { id: 4, name: 'Яйцо', category: 'EGGS', baseUnit: 'PCS', gramsPerPiece: null };
+    const groups = buildShoppingList(
+      [{ servings: 3.65, baseServings: 2, ingredients: [{ ingredient: egg, quantity: 4, unit: 'PCS' }] }],
+      [],
+    );
+    expect(groups[0].lines[0].required).toBe(8);
+  });
+
   it('scales by servings and groups by category', () => {
     const groups = buildShoppingList(
       [

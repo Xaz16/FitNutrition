@@ -66,7 +66,7 @@ export function buildShoppingList(meals: MealUsage[], marks: ShoppingMarkInfo[])
     const mark = markById.get(ingredient.id);
     const appliesToThisUnit = unit === ingredient.baseUnit;
     const atHome = appliesToThisUnit ? (mark?.atHomeQty ?? 0) : 0;
-    const required = roundQty(quantity);
+    const required = unit === 'PCS' ? Math.ceil(quantity - 1e-9) : roundQty(quantity);
     const line: ShoppingLine = {
       ingredientId: ingredient.id,
       name: ingredient.name,
