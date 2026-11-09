@@ -1,0 +1,69 @@
+@startuml structure
+title Структурная схема Fit Nutrition Supply
+skinparam componentStyle rectangle
+skinparam defaultFontName Arial
+skinparam shadowing false
+skinparam packageStyle rectangle
+left to right direction
+
+actor "Пользователь" as user
+
+package "Клиент: SPA (React + TypeScript)" as spa {
+  [Экраны\nвход, профиль, семья,\nрацион, рецепт, покупки,\nкорзина, ИИ-анализ] as pages
+  [Маршрутизация\n(React Router)] as router
+  [Кэш серверного состояния\n(TanStack Query)] as cache
+  [API-клиент\nJWT в заголовке] as apiClient
+}
+
+package "Сервер: модульный монолит (NestJS)" as api {
+  [AuthModule\nрегистрация, вход,\nблокировка, JWT] as auth
+  [Профиль и семья\nпараметры, аллергии,\nисключения, бюджет] as profile
+  [Каталог\nаллергены, продукты,\nблюда, рецепты] as catalog
+  [PlansModule\nрационы, замены,\nсписок покупок, корзины,\nИИ-анализ] as plans
+  package "Доменное ядро (чистые функции)" as domain {
+    [nutrition\nнорма КБЖУ] as nutrition
+    [plan-generator\nподбор блюд, повторы,\nальтернативы] as generator
+    [shopping-list\nсводный список] as shopping
+    [basket\nупаковки, корзины,\nбюджет, 2 магазина] as basket
+    [day-deviation\nотклонения по дням] as deviation
+  }
+  interface "AiAdvisor" as aiPort
+  [Адаптеры советника\nStub / Unavailable\n(цель: LLM-провайдер)] as aiAdapter
+  [PrismaModule\nдоступ к данным] as prisma
+}
+
+database "PostgreSQL" as db {
+  [пользователи и семья]
+  [каталог блюд]
+  [цены сетей]
+  [рационы и отметки]
+}
+
+cloud "Внешние системы (целевая версия)" as ext {
+  [Источники цен 5 сетей\nадаптеры / импорт CSV] as prices
+  [LLM-провайдер] as llm
+}
+
+user --> pages
+pages --> router
+pages --> cache
+cache --> apiClient
+apiClient --> auth : REST/JSON
+apiClient --> profile : REST/JSON
+apiClient --> catalog : REST/JSON
+apiClient --> plans : REST/JSON
+profile --> nutrition
+plans --> generator
+plans --> shopping
+plans --> basket
+plans --> deviation
+plans --> aiPort
+aiPort <|.. aiAdapter
+aiAdapter ..> llm
+auth --> prisma
+profile --> prisma
+catalog --> prisma
+plans --> prisma
+prisma --> db
+prices ..> db : обновление цен\n(в прототипе: seed)
+@enduml

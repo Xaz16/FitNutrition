@@ -1,0 +1,17 @@
+@startsalt
+title Экран 1. Вход и регистрация (FR-01)
+{+
+  {* Fit Nutrition Supply }
+  ==
+  { (X) Вход | () Регистрация }
+  .
+  Email     | "demo@fitnutrition.local  "
+  Пароль    | "*********                "
+  .
+  [         Войти          ]
+  .
+  <color:red>Неверные учётные данные</color>
+  .
+  { Нет аккаунта? | [Зарегистрироваться] }
+}
+@endsalt

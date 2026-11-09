@@ -1,0 +1,58 @@
+@startuml use-case
+title Диаграмма вариантов использования
+skinparam defaultFontName Arial
+skinparam shadowing false
+left to right direction
+
+actor "Гость" as guest
+actor "Пользователь" as user
+actor "ИИ-сервис\n(LLM)" as ai
+actor "Источник цен\nсетей" as prices
+guest <|-- user
+
+rectangle "Fit Nutrition Supply" {
+  usecase "Зарегистрироваться\n(FR-01)" as UC1
+  usecase "Войти\n(FR-01, NFR-01)" as UC2
+  usecase "Заполнить профиль\n(FR-02)" as UC3
+  usecase "Рассчитать норму\nкалорий и БЖУ" as UC3a
+  usecase "Указать аллергены\nи исключения (FR-03)" as UC4
+  usecase "Управлять членами\nсемьи (FR-04)" as UC5
+  usecase "Составить рацион\nна 7–31 день (FR-05, FR-06)" as UC6
+  usecase "Исключить блюда\nс аллергенами" as UC6a
+  usecase "Заменить блюдо\n(FR-07)" as UC7
+  usecase "Посмотреть рецепт\n(FR-08)" as UC8
+  usecase "Получить список\nпокупок (FR-09)" as UC9
+  usecase "Отметить купленное\nи имеющееся дома (FR-10)" as UC10
+  usecase "Сравнить корзины\nв пяти сетях (FR-11–FR-13)" as UC11
+  usecase "Рассчитать число\nупаковок (FR-12)" as UC11a
+  usecase "Получить совет\nо двух магазинах (FR-14)" as UC12
+  usecase "Проверить прогноз\nпо бюджету (FR-15)" as UC13
+  usecase "Получить ИИ-анализ\nрациона (FR-17)" as UC14
+  usecase "Обновить цены\n(NFR-03)" as UC15
+}
+
+guest --> UC1
+guest --> UC2
+user --> UC3
+user --> UC4
+user --> UC5
+user --> UC6
+user --> UC7
+user --> UC8
+user --> UC9
+user --> UC10
+user --> UC11
+user --> UC13
+user --> UC14
+
+UC3 ..> UC3a : <<include>>
+UC5 ..> UC3a : <<include>>
+UC6 ..> UC6a : <<include>>
+UC7 ..> UC6a : <<include>>
+UC11 ..> UC11a : <<include>>
+UC11 ..> UC13 : <<include>>
+UC12 .> UC11 : <<extend>>
+UC7 .> UC6 : <<extend>>
+UC14 -- ai
+UC15 -- prices
+@enduml

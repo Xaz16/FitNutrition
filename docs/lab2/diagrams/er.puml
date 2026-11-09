@@ -1,0 +1,176 @@
+@startuml er
+title ER-диаграмма (PostgreSQL, соответствует prisma/schema.prisma)
+skinparam defaultFontName Arial
+skinparam shadowing false
+skinparam linetype ortho
+hide circle
+hide methods
+
+entity "User" as user {
+  * id : uuid <<PK>>
+  --
+  * email : text <<UNIQUE>>
+  * passwordHash : text
+  * failedLogins : int
+  firstFailedAt : timestamp
+  lockedUntil : timestamp
+  * createdAt : timestamp
+}
+
+entity "UserSettings" as settings {
+  * userId : uuid <<PK, FK>>
+  --
+  * city : text
+  * mealsPerDay : int
+  * repeatLimitPerWeek : int
+  * monthlyBudgetRub : decimal(10,2)
+}
+
+entity "HouseholdMember" as member {
+  * id : uuid <<PK>>
+  --
+  * userId : uuid <<FK>>
+  * name : text
+  * isOwner : bool
+  * sex : Sex
+  * age : int
+  * heightCm : int
+  * weightKg : decimal(5,1)
+  * activityFactor : decimal(4,3)
+  * goal : Goal
+}
+
+entity "Allergen" as allergen {
+  * code : text <<PK>>
+  --
+  * name : text
+}
+
+entity "MemberAllergen" as memberAllergen {
+  * memberId : uuid <<PK, FK>>
+  * allergenCode : text <<PK, FK>>
+}
+
+entity "MemberExclusion" as memberExclusion {
+  * memberId : uuid <<PK, FK>>
+  * ingredientId : int <<PK, FK>>
+}
+
+entity "Ingredient" as ingredient {
+  * id : serial <<PK>>
+  --
+  * name : text <<UNIQUE>>
+  * category : IngredientCategory
+  * baseUnit : Unit
+  gramsPerPiece : decimal(7,1)
+}
+
+entity "IngredientAllergen" as ingredientAllergen {
+  * ingredientId : int <<PK, FK>>
+  * allergenCode : text <<PK, FK>>
+}
+
+entity "Dish" as dish {
+  * id : serial <<PK>>
+  --
+  * name : text <<UNIQUE>>
+  * mealType : MealType
+  * baseServings : int
+  * kcalPerServing : int
+  proteinG : decimal(6,1)
+  fatG : decimal(6,1)
+  carbsG : decimal(6,1)
+  * cookTimeMin : int
+  * steps : text[]
+  * compositionComplete : bool
+}
+
+entity "DishIngredient" as dishIngredient {
+  * dishId : int <<PK, FK>>
+  * ingredientId : int <<PK, FK>>
+  --
+  * quantity : decimal(8,1)
+  * unit : Unit
+}
+
+entity "MealPlan" as plan {
+  * id : uuid <<PK>>
+  --
+  * userId : uuid <<FK>>
+  * startDate : date
+  * days : int
+  * mealsPerDay : int
+  * dailyKcalTarget : int
+  * budgetRub : decimal(10,2)
+  * needsRecheck : bool
+  * createdAt : timestamp
+}
+
+entity "PlannedMeal" as meal {
+  * id : uuid <<PK>>
+  --
+  * planId : uuid <<FK>>
+  * dayIndex : int
+  * slot : int
+  * mealType : MealType
+  * dishId : int <<FK>>
+  * servings : decimal(5,2)
+  .. UNIQUE(planId, dayIndex, slot) ..
+}
+
+entity "ShoppingMark" as mark {
+  * planId : uuid <<PK, FK>>
+  * ingredientId : int <<PK, FK>>
+  --
+  * bought : bool
+  * atHomeQty : decimal(8,1)
+}
+
+entity "RetailChain" as chain {
+  * code : text <<PK>>
+  --
+  * name : text
+}
+
+entity "Product" as product {
+  * id : serial <<PK>>
+  --
+  * chainCode : text <<FK>>
+  * ingredientId : int <<FK>>
+  * title : text
+  * packSize : decimal(8,1)
+  * packUnit : Unit
+  * priceRub : decimal(10,2)
+  * inStock : bool
+  * priceUpdatedAt : timestamp
+  .. UNIQUE(chainCode, ingredientId) ..
+}
+
+entity "AiAnalysis" as analysis {
+  * id : uuid <<PK>>
+  --
+  * planId : uuid <<FK>>
+  * status : AnalysisStatus
+  * recommendations : jsonb
+  * createdAt : timestamp
+}
+
+user ||--o| settings
+user ||--o{ member
+user ||--o{ plan
+member ||--o{ memberAllergen
+allergen ||--o{ memberAllergen
+member ||--o{ memberExclusion
+ingredient ||--o{ memberExclusion
+ingredient ||--o{ ingredientAllergen
+allergen ||--o{ ingredientAllergen
+dish ||--|{ dishIngredient
+ingredient ||--o{ dishIngredient
+plan ||--|{ meal
+dish ||--o{ meal
+plan ||--o{ mark
+ingredient ||--o{ mark
+chain ||--o{ product
+ingredient ||--o{ product
+plan ||--o{ analysis
+@enduml
