@@ -4,6 +4,8 @@ import type { DayDeviation } from '../domain/day-deviation.js';
 
 const NOTICEABLE_DEVIATION_PCT = 5;
 
+const pct = (value: number) => value.toLocaleString('ru-RU', { maximumFractionDigits: 1 });
+
 const MACRO_ADVICE = {
   protein: {
     label: 'белка',
@@ -46,14 +48,14 @@ function macroRecommendation(days: DayDeviation[], macro: Macro): Recommendation
     return {
       dayIndex: day.dayIndex,
       dishId: null,
-      text: `${dayLabel(day)}: количество ${advice.label} близко к норме (отклонение ${deviation} %), менять ничего не нужно.`,
+      text: `${dayLabel(day)}: количество ${advice.label} близко к норме (отклонение ${pct(deviation)} %), менять ничего не нужно.`,
     };
   }
   const direction = deviation < 0 ? 'меньше' : 'больше';
   return {
     dayIndex: day.dayIndex,
     dishId: day.topDish?.dishId ?? null,
-    text: `${dayLabel(day)}: ${advice.label} на ${Math.abs(deviation)} % ${direction} нормы. ${deviation < 0 ? advice.low : advice.high}`,
+    text: `${dayLabel(day)}: ${advice.label} на ${pct(Math.abs(deviation))} % ${direction} нормы. ${deviation < 0 ? advice.low : advice.high}`,
   };
 }
 
@@ -72,7 +74,7 @@ export class StubAiAdvisor implements AiAdvisor {
     result.push({
       dayIndex: kcal.dayIndex,
       dishId: kcal.topDish?.dishId ?? null,
-      text: `${dayLabel(kcal)}: калорийность отличается от нормы на ${kcal.kcalDeviationPct} %. Самое калорийное блюдо дня — «${kcal.topDish?.dishName}» (${kcal.topDish?.kcal} ккал).`,
+      text: `${dayLabel(kcal)}: калорийность отличается от нормы на ${pct(kcal.kcalDeviationPct)} %. Самое калорийное блюдо дня — «${kcal.topDish?.dishName}» (${kcal.topDish?.kcal} ккал).`,
     });
 
     const incomplete = days.filter((d) => d.incompleteNutrition);
@@ -80,7 +82,7 @@ export class StubAiAdvisor implements AiAdvisor {
       result.push({
         dayIndex: incomplete[0].dayIndex,
         dishId: null,
-        text: `Дни ${incomplete.map((d) => d.dayIndex + 1).join(', ')}: для части блюд нет данных о БЖУ, эти дни в оценке белков, жиров и углеводов не учитывались.`,
+        text: `${incomplete.length === 1 ? 'День' : 'Дни'} ${incomplete.map((d) => d.dayIndex + 1).join(', ')}: для части блюд нет данных о БЖУ, поэтому белки, жиры и углеводы оценены без этих дней.`,
       });
     }
     return result;
